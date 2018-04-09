@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MovieApp</string>
+    <string name="login_with_google">Login with Google</string>
 </resources>
