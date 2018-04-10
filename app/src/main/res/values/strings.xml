@@ -5,4 +5,5 @@
     <string name="input_password">Input Password</string>
     <string name="login">Login</string>
     <string name="remember_email_and_password">Remember email and password</string>
+    <string name="or">Or</string>
 </resources>

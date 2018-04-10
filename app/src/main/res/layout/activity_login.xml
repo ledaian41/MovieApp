@@ -59,5 +59,19 @@
             android:layout_below="@+id/layoutRemember"
             android:text="@string/login" />
 
+        <TextView
+            android:id="@+id/tvOr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnLogin"
+            android:gravity="center"
+            android:text="@string/or" />
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btnLoginGoogle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvOr" />
+
     </RelativeLayout>
 </layout>
