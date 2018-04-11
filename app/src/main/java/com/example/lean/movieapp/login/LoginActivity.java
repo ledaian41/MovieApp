@@ -114,20 +114,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case Utils.CODE.LOGIN_GOOGLE_CODE:
-                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                    try {
-                        GoogleSignInAccount account = task.getResult(ApiException.class);
-                        fireBaseAuthWithGoogle(account);
-                    } catch (ApiException e) {
-                        Toast.makeText(this, "Google sign in failed", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                default:
-                    break;
-            }
+        switch (requestCode) {
+            case Utils.CODE.LOGIN_GOOGLE_CODE:
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                try {
+                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                    fireBaseAuthWithGoogle(account);
+                } catch (ApiException e) {
+                    Toast.makeText(this, "Google sign in failed", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                break;
         }
     }
 
