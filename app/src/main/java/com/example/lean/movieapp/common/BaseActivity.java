@@ -1,10 +1,12 @@
 package com.example.lean.movieapp.common;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.lean.movieapp.R;
+import com.example.lean.movieapp.login.LoginActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -21,6 +23,14 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initFireBaseAuth();
         initGoogleSignIn();
+    }
+
+    @Override
+    protected void onStart() {
+        if(!isLogin()){
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+        super.onStart();
     }
 
     private void initGoogleSignIn() {
