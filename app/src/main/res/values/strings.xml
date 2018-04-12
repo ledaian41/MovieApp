@@ -10,5 +10,6 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="sign_out">Sign out</string>
-
+    <string name="movie_name">Movie name...</string>
+    <string name="api_key">73b7aa70ab52ac1b3f5af1ac0e4ad9a3</string>
 </resources>
