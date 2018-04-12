@@ -9,5 +9,6 @@
     <string name="web_client_id">9361508384-jq0n69cn1eo53cdolnm8g0ho1ijr0ekj.apps.googleusercontent.com</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="sign_out">Sign out</string>
 
 </resources>

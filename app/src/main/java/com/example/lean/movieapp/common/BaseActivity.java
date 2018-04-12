@@ -25,14 +25,6 @@ public class BaseActivity extends AppCompatActivity {
         initGoogleSignIn();
     }
 
-    @Override
-    protected void onStart() {
-        if(!isLogin()){
-            startActivity(new Intent(this, LoginActivity.class));
-        }
-        super.onStart();
-    }
-
     private void initGoogleSignIn() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.web_client_id))
