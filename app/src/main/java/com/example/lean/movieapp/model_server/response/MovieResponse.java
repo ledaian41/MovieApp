@@ -3,12 +3,13 @@ package com.example.lean.movieapp.model_server.response;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.lean.movieapp.api.APIManager;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class MovieRespone implements Parcelable {
+public class MovieResponse implements Parcelable {
     @Expose
     @SerializedName("release_date")
     private String release_date;
@@ -52,7 +53,7 @@ public class MovieRespone implements Parcelable {
     @SerializedName("vote_count")
     private int vote_count;
 
-    protected MovieRespone(Parcel in) {
+    protected MovieResponse(Parcel in) {
         release_date = in.readString();
         overview = in.readString();
         adult = in.readByte() != 0;
@@ -68,15 +69,15 @@ public class MovieRespone implements Parcelable {
         vote_count = in.readInt();
     }
 
-    public static final Creator<MovieRespone> CREATOR = new Creator<MovieRespone>() {
+    public static final Creator<MovieResponse> CREATOR = new Creator<MovieResponse>() {
         @Override
-        public MovieRespone createFromParcel(Parcel in) {
-            return new MovieRespone(in);
+        public MovieResponse createFromParcel(Parcel in) {
+            return new MovieResponse(in);
         }
 
         @Override
-        public MovieRespone[] newArray(int size) {
-            return new MovieRespone[size];
+        public MovieResponse[] newArray(int size) {
+            return new MovieResponse[size];
         }
     };
 
@@ -105,7 +106,7 @@ public class MovieRespone implements Parcelable {
     }
 
     public String getBackdrop_path() {
-        return backdrop_path;
+        return APIManager.BASE_IMAGE_URL + backdrop_path;
     }
 
     public void setBackdrop_path(String backdrop_path) {
@@ -137,7 +138,7 @@ public class MovieRespone implements Parcelable {
     }
 
     public String getPoster_path() {
-        return poster_path;
+        return APIManager.BASE_IMAGE_URL + poster_path;
     }
 
     public void setPoster_path(String poster_path) {
