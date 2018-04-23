@@ -30,16 +30,17 @@
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize">
 
-            <com.yarolegovich.discretescrollview.DiscreteScrollView
-                android:id="@+id/discreteScrollView"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="200dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/discreteScrollView"
-                android:text="=============================================" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/viewPager" />
+
         </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>

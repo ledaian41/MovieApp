@@ -68,18 +68,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         String password = edtPassword.getText().toString().trim();
         if (mLoginPresenter.isEmailValid(email) && mLoginPresenter.isPasswordValid(password)) {
             mFireBaseAuth.signInWithEmailAndPassword(email, password)
-                    .addOnFailureListener(this, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(LoginActivity.this, "Login Failed!", Toast.LENGTH_LONG).show();
-                        }
-                    })
-                    .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
-                        @Override
-                        public void onSuccess(AuthResult authResult) {
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_LONG).show();
-                        }
+                    .addOnFailureListener(this, e -> Toast.makeText(LoginActivity.this, "Login Failed!", Toast.LENGTH_LONG).show())
+                    .addOnSuccessListener(this, authResult -> {
+                        Intent intent = new Intent(this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        Toast.makeText(LoginActivity.this, "Login Success!", Toast.LENGTH_LONG).show();
                     });
         } else {
             Toast.makeText(this, "Please input correct email and password", Toast.LENGTH_LONG).show();
@@ -96,7 +90,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         super.onStart();
         if (isLogin()) {
             //Return true => User has been logged
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         } else {
             //TODO nothing
         }
@@ -131,19 +127,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mFireBaseAuth.signInWithCredential(credential)
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "signInWithCredential:failure", e.getCause());
-                        Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
-                    }
+                .addOnFailureListener(this, e -> {
+                    Log.w(TAG, "signInWithCredential:failure", e.getCause());
+                    Toast.makeText(LoginActivity.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
                 })
-                .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        if (authResult != null) {
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        }
+                .addOnSuccessListener(this, authResult -> {
+                    if (authResult != null) {
+                        Intent intent = new Intent(this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                     }
                 });
     }

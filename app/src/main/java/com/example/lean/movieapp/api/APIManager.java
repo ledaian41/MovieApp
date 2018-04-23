@@ -1,18 +1,15 @@
 package com.example.lean.movieapp.api;
 
-import android.support.annotation.NonNull;
 
 import com.example.lean.movieapp.BuildConfig;
 import com.example.lean.movieapp.model_server.response.DataResponse;
 
-import java.io.IOException;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import okhttp3.HttpUrl;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -48,5 +45,9 @@ public class APIManager {
 
     public static Observable<DataResponse> getTopRatedMovies(int page) {
         return getAPI().create(API.class).getTopRatedMovies(page);
+    }
+
+    public static Observable<DataResponse> searchMovie(Map<String, String> searchRequest){
+        return getAPI().create(API.class).getSearchResult(searchRequest);
     }
 }

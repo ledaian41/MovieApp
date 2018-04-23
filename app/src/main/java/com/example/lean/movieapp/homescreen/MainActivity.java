@@ -10,21 +10,27 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
+import android.widget.ListView;
 
+import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.common.BaseActivity;
 import com.example.lean.movieapp.login.LoginActivity;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
+import com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, SearchView.OnQueryTextListener, MainInterface.View {
@@ -33,9 +39,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private NavigationView mNavigationView;
     private ActionBarDrawerToggle mDrawerToggle;
     private SearchView searchView;
-    private DiscreteScrollView mDiscreteScrollView;
     private MainPresenter mPresenter;
     private PopularAdapter mPopularAdapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +51,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         initView();
         setupView();
         callApi();
-
     }
 
     private void callApi() {
@@ -62,6 +67,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mToolbar = findViewById(R.id.toolbar_main);
         mNavigationView = findViewById(R.id.nav_view);
         mDrawerLayout = findViewById(R.id.drawer_layout);
+        recyclerView = findViewById(R.id.recyclerView);
         findViewById(R.id.btnLogout).setOnClickListener(this);
     }
 
@@ -70,10 +76,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerToggle = setupDrawerToggle();
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-
-        mPopularAdapter = new PopularAdapter(new ArrayList<MovieResponse>(), this);
-        mDiscreteScrollView = new DiscreteScrollView(this);
-        mDiscreteScrollView.setAdapter(mPopularAdapter);
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -171,7 +173,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void getPopularSuccess(List<MovieResponse> movieResponses) {
         if (movieResponses != null) {
-            mPopularAdapter.setMovieResponses(movieResponses);
+            mPopularAdapter = new PopularAdapter(movieResponses);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerView.setAdapter(mPopularAdapter);
         }
     }
 
