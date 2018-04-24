@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,6 +43,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private MainPresenter mPresenter;
     private PopularAdapter mPopularAdapter;
     private RecyclerView recyclerView;
+    private ViewPager viewPager;
+    private ViewPagerAdapter mViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mNavigationView = findViewById(R.id.nav_view);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         recyclerView = findViewById(R.id.recyclerView);
+        viewPager = findViewById(R.id.viewPager);
         findViewById(R.id.btnLogout).setOnClickListener(this);
     }
 
@@ -76,6 +80,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerToggle = setupDrawerToggle();
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), new ArrayList<>());
+        viewPager.setAdapter(mViewPagerAdapter);
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -146,7 +152,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onQueryTextSubmit(String query) {
         searchView.clearFocus();
-
         return true;
     }
 
@@ -173,9 +178,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void getPopularSuccess(List<MovieResponse> movieResponses) {
         if (movieResponses != null) {
-            mPopularAdapter = new PopularAdapter(movieResponses);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter(mPopularAdapter);
+            mViewPagerAdapter.addMovies(movieResponses);
         }
     }
 

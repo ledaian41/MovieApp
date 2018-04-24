@@ -25,23 +25,30 @@
                 app:titleTextColor="@android:color/white" />
         </android.support.design.widget.AppBarLayout>
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize">
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/viewPager"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="wrap_content">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/viewPager" />
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
 
-        </RelativeLayout>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/viewPager" />
+
+            </RelativeLayout>
+        </ScrollView>
 
     </android.support.design.widget.CoordinatorLayout>
 

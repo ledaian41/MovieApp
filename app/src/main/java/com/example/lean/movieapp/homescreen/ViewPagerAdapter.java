@@ -8,21 +8,28 @@ import com.example.lean.movieapp.model_server.response.MovieResponse;
 
 import java.util.List;
 
-public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+public class ViewPagerAdapter extends SmartFragmentStatePagerAdapter {
 
     private List<MovieResponse> mMovieResponses;
 
-    public ViewPagerAdapter(FragmentManager fm) {
+    ViewPagerAdapter(FragmentManager fm, List<MovieResponse> responses) {
         super(fm);
+        this.mMovieResponses = responses;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return null;
+        MovieResponse movie = mMovieResponses.get(position);
+        return CarouselFragment.newInstance(movie);
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return mMovieResponses == null ? 0 : mMovieResponses.size();
+    }
+
+    public void addMovies(List<MovieResponse> movieResponses) {
+        this.mMovieResponses = movieResponses;
+        notifyDataSetChanged();
     }
 }
