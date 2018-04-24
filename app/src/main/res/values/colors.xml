@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="galleryItemOverlay">#cc000000</color>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#009688</color>
+    <color name="colorAccent">#4aa87a</color>
+
+    <!-- common colours -->
+    <color name="text_primary_dark">#de000000</color> <!-- 87% -->
+    <color name="text_secondary_dark">#8a000000</color> <!-- 54% -->
+    <color name="text_tertiary_dark">#61000000</color> <!-- 38% -->
+    <color name="text_primary_light">#ffffffff</color>
+    <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->
+    <color name="text_disabled_light">#4dffffff</color> <!-- 30% -->
+    <color name="background_light">#fafafa</color> <!-- grey 50 -->
+    <color name="background_lightish">#e0e0e0</color> <!-- grey 300 -->
+    <color name="background_card">#ffffff</color>
+    <color name="background_dark">#ff333333</color>
+    <color name="background_super_dark">#ff292929</color>
+    <!-- text (most text uses material theme colours) -->
+    <color name="hint_disabled_dark">#43000000</color> <!-- 26% black -->
+    <color name="text_on_accent">#8f000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="transparent_color">#00ffffff</color>
 </resources>

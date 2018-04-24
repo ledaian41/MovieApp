@@ -27,6 +27,7 @@ import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.common.BaseActivity;
 import com.example.lean.movieapp.login.LoginActivity;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
+import com.example.lean.movieapp.ui.ZoomOutPageTransformer;
 import com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
@@ -81,6 +82,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), new ArrayList<>());
+        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         viewPager.setAdapter(mViewPagerAdapter);
     }
 
