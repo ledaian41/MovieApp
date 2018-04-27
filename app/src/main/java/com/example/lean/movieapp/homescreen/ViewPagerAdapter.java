@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 public class ViewPagerAdapter extends SmartFragmentStatePagerAdapter {
@@ -20,6 +22,7 @@ public class ViewPagerAdapter extends SmartFragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         MovieResponse movie = mMovieResponses.get(position);
+        EventBus.getDefault().post(new ViewPagerEvent(movie));
         return CarouselFragment.newInstance(movie);
     }
 
@@ -31,5 +34,17 @@ public class ViewPagerAdapter extends SmartFragmentStatePagerAdapter {
     public void addMovies(List<MovieResponse> movieResponses) {
         this.mMovieResponses = movieResponses;
         notifyDataSetChanged();
+    }
+
+    public static class ViewPagerEvent {
+        private MovieResponse movieResponse;
+
+        ViewPagerEvent(MovieResponse movieResponse) {
+            this.movieResponse = movieResponse;
+        }
+
+        public MovieResponse getMovieResponse() {
+            return movieResponse;
+        }
     }
 }

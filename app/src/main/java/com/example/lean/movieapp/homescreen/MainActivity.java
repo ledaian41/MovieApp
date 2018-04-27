@@ -21,6 +21,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.example.lean.movieapp.R;
@@ -31,21 +33,34 @@ import com.example.lean.movieapp.ui.ZoomOutPageTransformer;
 import com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, SearchView.OnQueryTextListener, MainInterface.View {
-    private Toolbar mToolbar;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
+    @BindView(R.id.toolbar_main)
+    Toolbar mToolbar;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawerLayout;
+    @BindView(R.id.nav_view)
+    NavigationView mNavigationView;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+    @BindView(R.id.viewPager)
+    ViewPager viewPager;
+    @BindView(R.id.tvMovieTitle)
+    TextView tvMovieTitle;
+    private ViewPagerAdapter mViewPagerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private SearchView searchView;
     private MainPresenter mPresenter;
     private PopularAdapter mPopularAdapter;
-    private RecyclerView recyclerView;
-    private ViewPager viewPager;
-    private ViewPagerAdapter mViewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +83,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void initView() {
+        ButterKnife.bind(this);
         mToolbar = findViewById(R.id.toolbar_main);
         mNavigationView = findViewById(R.id.nav_view);
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -118,6 +134,23 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (!isLogin()) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onTapChanged(ViewPagerAdapter.ViewPagerEvent pagerEvent) {
+        tvMovieTitle.setText(pagerEvent.getMovieResponse().getTitle());
     }
 
     @Override
