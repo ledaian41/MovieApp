@@ -97,7 +97,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerToggle = setupDrawerToggle();
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), new ArrayList<>());
+        mViewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
         viewPager.setAdapter(mViewPagerAdapter);
     }
@@ -149,8 +149,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     @Subscribe
-    public void onTapChanged(ViewPagerAdapter.ViewPagerEvent pagerEvent) {
-        tvMovieTitle.setText(pagerEvent.getMovieResponse().getTitle());
+    public void onTapChanged(CarouselFragment.ViewPagerEvent pagerEvent) {
+        tvMovieTitle.setText(pagerEvent.getMovieResponse().getOriginal_title());
     }
 
     @Override
