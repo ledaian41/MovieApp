@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,17 @@ import com.example.lean.movieapp.model_server.response.MovieResponse;
 
 import org.greenrobot.eventbus.EventBus;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class CarouselFragment extends Fragment implements View.OnClickListener {
-    private ImageView imgMovie;
+    @BindView(R.id.cardView)
+    CardView cardView;
+    @BindView(R.id.imgMovie)
+    ImageView imgMovie;
     private MovieResponse mMovie;
 
     public static CarouselFragment newInstance(MovieResponse movie) {
-
         Bundle args = new Bundle();
         args.putParcelable(Utils.Name.MOVIE, movie);
         EventBus.getDefault().post(new ViewPagerEvent(movie));
@@ -49,7 +55,8 @@ public class CarouselFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        imgMovie = view.findViewById(R.id.imgMovie);
+
+        cardView.setMaxCardElevation(cardView.getCardElevation() * CardAdapter.MAX_ELEVATION_FACTOR);
         imgMovie.setOnClickListener(this);
         Glide.with(view.getContext()).load(mMovie.getPoster_path()).into(imgMovie);
     }
@@ -58,11 +65,15 @@ public class CarouselFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imgMovie:
-                Toast.makeText(getContext(), mMovie.getOriginal_title(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), mMovie.getTitle(), Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
         }
+    }
+
+    public CardView getCardView() {
+        return cardView;
     }
 
     public static class ViewPagerEvent {

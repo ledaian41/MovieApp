@@ -3,30 +3,40 @@ package com.example.lean.movieapp.homescreen;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.CardView;
 import android.widget.Toast;
 
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 
-import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ViewPagerAdapter extends SmartFragmentStatePagerAdapter implements ViewPager.OnPageChangeListener {
+public class ViewPagerAdapter extends SmartFragmentStatePagerAdapter implements CardAdapter {
 
     private List<MovieResponse> mMovieResponses;
-    private Context mContext;
+    private float baseElevation;
+    private List<CarouselFragment> carouselFragments;
 
-    ViewPagerAdapter(Context context, FragmentManager fm) {
+    ViewPagerAdapter(FragmentManager fm, float baseElevation) {
         super(fm);
-        this.mContext = context;
+        carouselFragments = new ArrayList<>();
+        this.baseElevation = baseElevation;
     }
 
     @Override
     public Fragment getItem(int position) {
-        MovieResponse movie = mMovieResponses.get(position);
-        return CarouselFragment.newInstance(movie);
+        return CarouselFragment.newInstance(mMovieResponses.get(position));
+    }
+
+    @Override
+    public float getBaseElevation() {
+        return baseElevation;
+    }
+
+    @Override
+    public CardView getCardViewAt(int position) {
+        return carouselFragments.get(position).getCardView();
     }
 
     @Override
@@ -36,21 +46,10 @@ public class ViewPagerAdapter extends SmartFragmentStatePagerAdapter implements 
 
     public void addMovies(List<MovieResponse> movieResponses) {
         this.mMovieResponses = movieResponses;
+        for (MovieResponse movie : movieResponses) {
+            carouselFragments.add(CarouselFragment.newInstance(movie));
+        }
         notifyDataSetChanged();
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        Toast.makeText(mContext, "onPageScrolled: " + String.valueOf(position), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        Toast.makeText(mContext, "onPageSelected" + String.valueOf(position), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        Toast.makeText(mContext, "onPageScrollStateChanged" + String.valueOf(state), Toast.LENGTH_SHORT).show();
-    }
 }

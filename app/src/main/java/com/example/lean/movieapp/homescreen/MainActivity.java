@@ -27,8 +27,11 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.common.BaseActivity;
+import com.example.lean.movieapp.common.Utils;
 import com.example.lean.movieapp.login.LoginActivity;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
+import com.example.lean.movieapp.ui.ShadowTransformer;
+import com.example.lean.movieapp.ui.UiUtils;
 import com.example.lean.movieapp.ui.ZoomOutPageTransformer;
 import com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
@@ -97,9 +100,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerToggle = setupDrawerToggle();
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        mViewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
-        viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), UiUtils.dpToPixels(2, this));
+        ShadowTransformer shadowTransformer = new ShadowTransformer(viewPager, mViewPagerAdapter);
         viewPager.setAdapter(mViewPagerAdapter);
+        viewPager.setPageTransformer(false, shadowTransformer);
+        viewPager.setOffscreenPageLimit(3);
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
