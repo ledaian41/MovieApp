@@ -23,8 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CarouselFragment extends Fragment implements View.OnClickListener {
-    @BindView(R.id.cardView)
-    CardView cardView;
     @BindView(R.id.imgMovie)
     ImageView imgMovie;
     private MovieResponse mMovie;
@@ -32,7 +30,6 @@ public class CarouselFragment extends Fragment implements View.OnClickListener {
     public static CarouselFragment newInstance(MovieResponse movie) {
         Bundle args = new Bundle();
         args.putParcelable(Utils.Name.MOVIE, movie);
-        EventBus.getDefault().post(new ViewPagerEvent(movie));
         CarouselFragment fragment = new CarouselFragment();
         fragment.setArguments(args);
         return fragment;
@@ -58,7 +55,6 @@ public class CarouselFragment extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        cardView.setMaxCardElevation(cardView.getCardElevation() * CardAdapter.MAX_ELEVATION_FACTOR);
         imgMovie.setOnClickListener(this);
         Glide.with(view.getContext()).load(mMovie.getPoster_path()).into(imgMovie);
     }
@@ -74,19 +70,4 @@ public class CarouselFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public CardView getCardView() {
-        return cardView;
-    }
-
-    public static class ViewPagerEvent {
-        private MovieResponse movieResponse;
-
-        ViewPagerEvent(MovieResponse movieResponse) {
-            this.movieResponse = movieResponse;
-        }
-
-        public MovieResponse getMovieResponse() {
-            return movieResponse;
-        }
-    }
 }

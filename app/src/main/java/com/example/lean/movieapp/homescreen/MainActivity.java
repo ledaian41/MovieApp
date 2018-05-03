@@ -30,6 +30,7 @@ import com.example.lean.movieapp.common.BaseActivity;
 import com.example.lean.movieapp.common.Utils;
 import com.example.lean.movieapp.login.LoginActivity;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
+import com.example.lean.movieapp.ui.MyTransformer;
 import com.example.lean.movieapp.ui.ShadowTransformer;
 import com.example.lean.movieapp.ui.UiUtils;
 import com.example.lean.movieapp.ui.ZoomOutPageTransformer;
@@ -38,6 +39,7 @@ import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,6 +66,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private SearchView searchView;
     private MainPresenter mPresenter;
     private PopularAdapter mPopularAdapter;
+    private List<MovieResponse> mMovieResponseList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +95,25 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerLayout = findViewById(R.id.drawer_layout);
         recyclerView = findViewById(R.id.recyclerView);
         viewPager = findViewById(R.id.viewPager);
+        viewPager.setClipToPadding(false);
+        viewPager.setPageMargin(12);
         findViewById(R.id.btnLogout).setOnClickListener(this);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                tvMovieTitle.setText(mMovieResponseList.get(position).getTitle());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void setupView() {
@@ -100,10 +121,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerToggle = setupDrawerToggle();
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawerLayout.addDrawerListener(mDrawerToggle);
-        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), UiUtils.dpToPixels(2, this));
-        ShadowTransformer shadowTransformer = new ShadowTransformer(viewPager, mViewPagerAdapter);
+        mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mViewPagerAdapter);
-        viewPager.setPageTransformer(false, shadowTransformer);
+//        viewPager.setPageTransformer(false, new MyTransformer());
         viewPager.setOffscreenPageLimit(3);
     }
 
@@ -139,23 +159,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (!isLogin()) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Subscribe
-    public void onTapChanged(CarouselFragment.ViewPagerEvent pagerEvent) {
-        tvMovieTitle.setText(pagerEvent.getMovieResponse().getOriginal_title());
     }
 
     @Override
@@ -218,6 +221,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void getPopularSuccess(List<MovieResponse> movieResponses) {
         if (movieResponses != null) {
+            mMovieResponseList = movieResponses;
+            tvMovieTitle.setText(mMovieResponseList.get(0).getTitle());
             mViewPagerAdapter.addMovies(movieResponses);
         }
     }
@@ -226,4 +231,5 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public void getPopularFailed(String error) {
         Snackbar.make(mDrawerLayout, error, Snackbar.LENGTH_LONG).show();
     }
+
 }
