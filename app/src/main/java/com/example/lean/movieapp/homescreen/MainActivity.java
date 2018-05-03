@@ -14,13 +14,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,8 +59,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     DrawerLayout mDrawerLayout;
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
     @BindView(R.id.viewPager)
     ViewPager viewPager;
     @BindView(R.id.tvMovieTitle)
@@ -93,10 +95,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mToolbar = findViewById(R.id.toolbar_main);
         mNavigationView = findViewById(R.id.nav_view);
         mDrawerLayout = findViewById(R.id.drawer_layout);
-        recyclerView = findViewById(R.id.recyclerView);
         viewPager = findViewById(R.id.viewPager);
         viewPager.setClipToPadding(false);
-        viewPager.setPageMargin(60);//set margin for view
+        viewPager.setPageMargin(30);//set margin for view
         findViewById(R.id.btnLogout).setOnClickListener(this);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -123,7 +124,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mViewPagerAdapter);
-//        viewPager.setPageTransformer(false, new MyTransformer());
+        viewPager.setPageTransformer(false, new MyTransformer());
         viewPager.setOffscreenPageLimit(3);
     }
 
@@ -214,6 +215,25 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        ViewTreeObserver viewTreeObserver = viewPager.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(() -> {
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                    RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            int viewPagerWidth = viewPager.getWidth();
+            float viewPagerHeight = UiUtils.convertPixelsToDp(getHeightScreen(), this);
+
+            layoutParams.width = viewPagerWidth;
+            layoutParams.height = (int) viewPagerHeight;
+
+            viewPager.setLayoutParams(layoutParams);
+        });
+    }
+
+    @Override
     public void getTopRatedFailed(String error) {
 
     }
@@ -232,4 +252,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Snackbar.make(mDrawerLayout, error, Snackbar.LENGTH_LONG).show();
     }
 
+    private int getHeightScreen() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.heightPixels;
+    }
 }

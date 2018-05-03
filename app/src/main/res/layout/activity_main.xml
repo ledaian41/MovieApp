@@ -31,43 +31,33 @@
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize">
 
+
             <RelativeLayout
+                android:id="@+id/viewPagerLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/transparent_80"
+                android:gravity="center">
 
-                <RelativeLayout
-                    android:id="@+id/viewPagerLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/transparent_80"
-                    android:gravity="center">
-
-                    <android.support.v4.view.ViewPager
-                        android:id="@+id/viewPager"
-                        android:layout_width="wrap_content"
-                        android:layout_height="330dp"
-                        android:overScrollMode="never"
-                        android:paddingEnd="30dp"
-                        android:paddingStart="60dp" />
-
-                    <TextView
-                        android:id="@+id/tvMovieTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:padding="8dp"
-                        android:textColor="@color/white"
-                        android:textSize="17sp"
-                        tools:text="akshdjkasdjhkasjdhaksjdhas" />
-                </RelativeLayout>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recyclerView"
-                    android:layout_width="match_parent"
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/viewPagerLayout" />
+                    android:overScrollMode="never"
+                    android:paddingEnd="30dp"
+                    android:paddingStart="@dimen/card_padding" />
 
+                <TextView
+                    android:id="@+id/tvMovieTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:padding="8dp"
+                    android:textColor="@color/white"
+                    android:textSize="17sp"
+                    tools:text="akshdjkasdjhkasjdhaksjdhas" />
             </RelativeLayout>
+
         </ScrollView>
 
     </android.support.design.widget.CoordinatorLayout>
