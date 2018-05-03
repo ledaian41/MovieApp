@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         recyclerView = findViewById(R.id.recyclerView);
         viewPager = findViewById(R.id.viewPager);
         viewPager.setClipToPadding(false);
-        viewPager.setPageMargin(12);
+        viewPager.setPageMargin(60);//set margin for view
         findViewById(R.id.btnLogout).setOnClickListener(this);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

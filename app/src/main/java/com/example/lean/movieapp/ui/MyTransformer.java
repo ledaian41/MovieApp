@@ -7,6 +7,12 @@ import android.view.View;
 public class MyTransformer implements ViewPager.PageTransformer {
     @Override
     public void transformPage(@NonNull View page, float position) {
+        if (position < -1) {
+            page.setAlpha(0);
+        } else if (position <= 1) {
 
+        } else {
+            page.setAlpha(0);
+        }
     }
 }
