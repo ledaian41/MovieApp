@@ -17,7 +17,7 @@ public class MyTransformer implements ViewPager.PageTransformer {
         } else {
             factor = scale;
         }
-        view.setScaleY(factor);
-        view.setScaleX(factor);
+        view.setTranslationX(factor);
+//        view.setScaleX(factor);
     }
 }

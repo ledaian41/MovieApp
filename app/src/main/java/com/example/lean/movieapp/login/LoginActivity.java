@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lean.movieapp.homescreen.MainActivity;
@@ -22,11 +23,18 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class LoginActivity extends BaseActivity implements View.OnClickListener, LoginInterface.View {
     private final String TAG = "LoginActivity";
     private LoginPresenter mLoginPresenter;
-    private EditText edtEmail;
-    private EditText edtPassword;
+    @BindView(R.id.edtEmail)
+    EditText edtEmail;
+    @BindView(R.id.edtPassword)
+    EditText edtPassword;
+    @BindView(R.id.tvMovie)
+    TextView tvMovie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +46,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
 
     private void initView() {
-        edtEmail = findViewById(R.id.edtEmail);
-        edtPassword = findViewById(R.id.edtPassword);
+        ButterKnife.bind(this);
         findViewById(R.id.btnLogin).setOnClickListener(this);
         findViewById(R.id.btnLoginGoogle).setOnClickListener(this);
+
+        //TODO:ANIMATE tvMovie
     }
 
     @Override

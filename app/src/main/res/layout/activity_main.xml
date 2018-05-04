@@ -31,31 +31,55 @@
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize">
 
-
             <RelativeLayout
-                android:id="@+id/viewPagerLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/transparent_80"
-                android:gravity="center">
+                android:layout_height="wrap_content">
 
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/viewPager"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:overScrollMode="never"
-                    android:paddingEnd="30dp"
-                    android:paddingStart="@dimen/card_padding" />
+                <RelativeLayout
+                    android:id="@+id/viewPagerLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent_80"
+                    android:gravity="center">
+
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/viewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="330dp"
+                        android:overScrollMode="never" />
+
+                    <TextView
+                        android:id="@+id/tvMovieTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:padding="8dp"
+                        android:textColor="@color/white"
+                        android:textSize="17sp"
+                        tools:text="akshdjkasdjhkasjdhaksjdhas" />
+
+                    <me.relex.circleindicator.CircleIndicator
+                        android:id="@+id/circleIndicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp" />
+                </RelativeLayout>
 
                 <TextView
-                    android:id="@+id/tvMovieTitle"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvPopular"
+                    android:textSize="16sp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:padding="8dp"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    tools:text="akshdjkasdjhkasjdhaksjdhas" />
+                    android:paddingBottom="8dp"
+                    android:paddingTop="8dp"
+                    android:text="Popular"
+                    android:layout_below="@+id/viewPagerLayout"
+                    android:textColor="@color/white" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rvPopular"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvPopular" />
             </RelativeLayout>
 
         </ScrollView>

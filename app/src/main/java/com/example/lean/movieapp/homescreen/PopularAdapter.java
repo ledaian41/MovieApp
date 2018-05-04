@@ -14,13 +14,14 @@ import com.example.lean.movieapp.model_server.response.MovieResponse;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class PopularAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<MovieResponse> mMovieList;
 
-    public PopularAdapter(List<MovieResponse> movieResponses) {
-        this.mMovieList = movieResponses;
-    }
+    PopularAdapter() {}
 
     @NonNull
     @Override
@@ -42,19 +43,20 @@ public class PopularAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
 
-    public void setMovieResponses(List<MovieResponse> movieResponses) {
+    public void setMovies(List<MovieResponse> movieResponses) {
         this.mMovieList = movieResponses;
         notifyDataSetChanged();
     }
 
     public static class PopularViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.tvTitle)
         TextView tvTitle;
+        @BindView(R.id.imgMovie)
         ImageView imgMovie;
 
         PopularViewHolder(View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tvTitle);
-            imgMovie = itemView.findViewById(R.id.imgMovie);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

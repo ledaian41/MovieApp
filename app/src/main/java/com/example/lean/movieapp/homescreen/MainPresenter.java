@@ -1,24 +1,59 @@
 package com.example.lean.movieapp.homescreen;
 
+import com.example.lean.movieapp.api.API;
 import com.example.lean.movieapp.api.APIManager;
 import com.example.lean.movieapp.model_server.response.DataResponse;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainPresenter implements MainInterface.presenter {
 
     private MainInterface.View view;
 
-    public MainPresenter(MainInterface.View view) {
+    MainPresenter(MainInterface.View view) {
         this.view = view;
     }
 
     @Override
     public void getTopRated(int page) {
+        APIManager.getTopRatedMovies(page)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DataResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(DataResponse dataResponse) {
+                        if (view != null) {
+                            if (dataResponse != null) {
+                                if (dataResponse.getResults() != null && !dataResponse.getResults().isEmpty()) {
+                                    view.getTopRatedSuccess(dataResponse.getResults());
+                                } else {
+                                    view.getTopRatedSuccess(null);
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (view != null) {
+                            view.getTopRatedFailed(e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
     @Override

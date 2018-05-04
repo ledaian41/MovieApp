@@ -8,7 +8,7 @@ public class MainInterface {
     interface View {
         void initPresenter();
 
-        void getTopRatedSuccess();
+        void getTopRatedSuccess(List<MovieResponse> movieResponses);
 
         void getTopRatedFailed(String error);
 

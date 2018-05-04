@@ -6,72 +6,104 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:paddingEnd="15dp"
-        android:paddingStart="15dp">
-
-        <EditText
-            android:id="@+id/edtEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/input_email"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            tools:ignore="LabelFor" />
-
-        <EditText
-            android:id="@+id/edtPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edtEmail"
-            android:hint="@string/input_password"
-            android:imeOptions="actionDone"
-            android:inputType="textPassword"
-            tools:ignore="LabelFor" />
-
-        <RelativeLayout
-            android:id="@+id/layoutRemember"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/edtPassword"
-            android:gravity="center_vertical">
-
-            <android.support.v7.widget.AppCompatCheckBox
-                android:id="@+id/chkRemember"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/chkRemember"
-                android:layout_alignTop="@+id/chkRemember"
-                android:layout_toEndOf="@+id/chkRemember"
-                android:gravity="center_vertical"
-                android:text="@string/remember_email_and_password" />
-
-        </RelativeLayout>
-
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/layoutRemember"
-            android:text="@string/login" />
+        android:background="@color/colorPrimary">
 
         <TextView
-            android:id="@+id/tvOr"
+            android:id="@+id/tvMovie"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/btnLogin"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="40dp"
             android:gravity="center"
-            android:text="@string/or" />
+            android:padding="8dp"
+            android:text="The Movie"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold" />
 
-        <com.google.android.gms.common.SignInButton
-            android:id="@+id/btnLoginGoogle"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvOr" />
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingEnd="15dp"
+            android:paddingStart="15dp">
 
+
+            <EditText
+                android:id="@+id/edtEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/input_email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                tools:ignore="LabelFor" />
+
+            <EditText
+                android:id="@+id/edtPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edtEmail"
+                android:hint="@string/input_password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                tools:ignore="LabelFor" />
+
+            <RelativeLayout
+                android:id="@+id/layoutRemember"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/edtPassword"
+                android:gravity="center_vertical"
+                android:padding="4dp">
+
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:id="@+id/chkRemember"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/chkRemember"
+                    android:layout_alignTop="@+id/chkRemember"
+                    android:layout_toEndOf="@+id/chkRemember"
+                    android:gravity="center_vertical"
+                    android:text="@string/remember_email_and_password"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/layoutRemember"
+                android:layout_marginTop="40dp"
+                android:background="@color/background_super_dark"
+                android:text="@string/login"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/tvOr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/btnLogin"
+                android:gravity="center"
+                android:padding="8dp"
+                android:text="@string/or"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/btnLoginGoogle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvOr"
+                android:background="@color/background_super_dark"
+                android:text="GOOGLE SIGN IN"
+                android:textColor="@color/white" />
+
+        </RelativeLayout>
     </RelativeLayout>
+
+
 </layout>

@@ -10,7 +10,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -19,38 +19,19 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.ArrayAdapter;
-import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.simplelist.MaterialSimpleListAdapter;
 import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.common.BaseActivity;
-import com.example.lean.movieapp.common.Utils;
 import com.example.lean.movieapp.login.LoginActivity;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
-import com.example.lean.movieapp.ui.MyTransformer;
-import com.example.lean.movieapp.ui.ShadowTransformer;
-import com.example.lean.movieapp.ui.UiUtils;
-import com.example.lean.movieapp.ui.ZoomOutPageTransformer;
-import com.takusemba.multisnaprecyclerview.MultiSnapRecyclerView;
-import com.yarolegovich.discretescrollview.DiscreteScrollView;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.relex.circleindicator.CircleIndicator;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, SearchView.OnQueryTextListener, MainInterface.View {
     @BindView(R.id.toolbar_main)
@@ -63,12 +44,17 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     ViewPager viewPager;
     @BindView(R.id.tvMovieTitle)
     TextView tvMovieTitle;
+    @BindView(R.id.circleIndicator)
+    CircleIndicator circleIndicator;
+    @BindView(R.id.rvPopular)
+    RecyclerView mRvPopular;
     private ViewPagerAdapter mViewPagerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private SearchView searchView;
     private MainPresenter mPresenter;
     private PopularAdapter mPopularAdapter;
-    private List<MovieResponse> mMovieResponseList = new ArrayList<>();
+    private List<MovieResponse> mTopMovieList = new ArrayList<>();
+    private List<MovieResponse> mPopularMovieList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +68,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void callApi() {
         mPresenter.getPopular(1);
+        mPresenter.getTopRated(1);
     }
 
     @Override
@@ -96,23 +83,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mNavigationView = findViewById(R.id.nav_view);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         viewPager = findViewById(R.id.viewPager);
-        viewPager.setClipToPadding(false);
-        viewPager.setPageMargin(30);//set margin for view
         findViewById(R.id.btnLogout).setOnClickListener(this);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
+        viewPager.addOnPageChangeListener(new OnPageChangeAdapter() {
             @Override
             public void onPageSelected(int position) {
-                tvMovieTitle.setText(mMovieResponseList.get(position).getTitle());
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
+                tvMovieTitle.setText(mTopMovieList.get(position).getTitle());
             }
         });
     }
@@ -124,8 +99,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mViewPagerAdapter);
-        viewPager.setPageTransformer(false, new MyTransformer());
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(1);
+
+        mPopularAdapter = new PopularAdapter();
+        mRvPopular.setLayoutManager(new GridLayoutManager(this, 2));
+        mRvPopular.setAdapter(mPopularAdapter);
+
     }
 
     private ActionBarDrawerToggle setupDrawerToggle() {
@@ -210,40 +189,25 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     @Override
-    public void getTopRatedSuccess() {
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ViewTreeObserver viewTreeObserver = viewPager.getViewTreeObserver();
-        viewTreeObserver.addOnGlobalLayoutListener(() -> {
-            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.WRAP_CONTENT);
-
-            int viewPagerWidth = viewPager.getWidth();
-            float viewPagerHeight = UiUtils.convertPixelsToDp(getHeightScreen(), this);
-
-            layoutParams.width = viewPagerWidth;
-            layoutParams.height = (int) viewPagerHeight;
-
-            viewPager.setLayoutParams(layoutParams);
-        });
+    public void getTopRatedSuccess(List<MovieResponse> movieResponses) {
+        if (movieResponses != null) {
+            mTopMovieList = movieResponses;
+            tvMovieTitle.setText(mTopMovieList.get(0).getTitle());
+            mViewPagerAdapter.addMovies(movieResponses);
+            circleIndicator.setViewPager(viewPager);
+        }
     }
 
     @Override
     public void getTopRatedFailed(String error) {
-
+        Snackbar.make(mDrawerLayout, error, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
     public void getPopularSuccess(List<MovieResponse> movieResponses) {
         if (movieResponses != null) {
-            mMovieResponseList = movieResponses;
-            tvMovieTitle.setText(mMovieResponseList.get(0).getTitle());
-            mViewPagerAdapter.addMovies(movieResponses);
+            mPopularMovieList = movieResponses;
+            mPopularAdapter.setMovies(mPopularMovieList);
         }
     }
 
