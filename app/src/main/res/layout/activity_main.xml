@@ -64,22 +64,34 @@
                         android:layout_height="48dp" />
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/tvPopular"
-                    android:textSize="16sp"
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cardViewTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingTop="8dp"
-                    android:text="Popular"
                     android:layout_below="@+id/viewPagerLayout"
-                    android:textColor="@color/white" />
+                    android:layout_marginBottom="4dp"
+                    app:cardCornerRadius="0dp"
+                    app:cardElevation="8dp">
+
+                    <TextView
+                        android:id="@+id/tvPopular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/background_dark"
+                        android:padding="8dp"
+                        android:paddingTop="8dp"
+                        android:text="Popular"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </android.support.v7.widget.CardView>
+
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rvPopular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvPopular" />
+                    android:layout_below="@+id/cardViewTitle" />
             </RelativeLayout>
 
         </ScrollView>

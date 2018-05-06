@@ -3,6 +3,8 @@ package com.example.lean.movieapp.detail_movie;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.lean.movieapp.R;
+
 public class DetailMovieActivity extends AppCompatActivity {
 
     @Override
