@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.lean.movieapp.R;
@@ -49,6 +50,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     CircleIndicator circleIndicator;
     @BindView(R.id.rvPopular)
     RecyclerView mRvPopular;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
     private ViewPagerAdapter mViewPagerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private SearchView searchView;
@@ -56,6 +59,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private PopularAdapter mPopularAdapter;
     private List<MovieResponse> mTopMovieList = new ArrayList<>();
     private List<MovieResponse> mPopularMovieList = new ArrayList<>();
+    private List<MovieResponse> mSearchResultList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,5 +227,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.heightPixels;
+    }
+
+    private void clearFocusView(){
+        scrollView.clearFocus();
     }
 }
