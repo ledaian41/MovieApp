@@ -2,7 +2,7 @@ package com.example.lean.movieapp.homescreen;
 
 import android.support.v4.view.ViewPager;
 
-public abstract class OnPageChangeAdapter implements ViewPager.OnPageChangeListener {
+public class OnPageChangeAdapter implements ViewPager.OnPageChangeListener {
     @Override
     public void onPageSelected(int position) {
 

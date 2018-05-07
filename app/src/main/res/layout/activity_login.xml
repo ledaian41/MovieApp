@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimary">
+        android:background="@color/background_super_dark">
 
         <TextView
             android:id="@+id/tvMovie"
@@ -32,20 +32,27 @@
             <EditText
                 android:id="@+id/edtEmail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
+                android:background="@null"
                 android:hint="@string/input_email"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/white"
                 tools:ignore="LabelFor" />
 
             <EditText
                 android:id="@+id/edtPassword"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:layout_below="@+id/edtEmail"
+                android:layout_marginTop="16dp"
+                android:background="@null"
                 android:hint="@string/input_password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
+                android:textColor="@color/colorPrimary"
+                android:textColorHint="@color/white"
                 tools:ignore="LabelFor" />
 
             <RelativeLayout
@@ -53,6 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/edtPassword"
+                android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
                 android:padding="4dp">
 
@@ -79,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/layoutRemember"
                 android:layout_marginTop="40dp"
-                android:background="@color/background_super_dark"
+                android:background="@color/colorPrimary"
                 android:text="@string/login"
                 android:textColor="@color/white" />
 
@@ -98,7 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvOr"
-                android:background="@color/background_super_dark"
+                android:background="@color/colorPrimary"
                 android:text="GOOGLE SIGN IN"
                 android:textColor="@color/white" />
 

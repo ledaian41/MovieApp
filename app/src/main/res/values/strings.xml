@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">MovieApp</string>
     <string name="login_with_google">Login with Google</string>
-    <string name="input_email">Input Email</string>
-    <string name="input_password">Input Password</string>
+    <string name="input_email">Email</string>
+    <string name="input_password">Password</string>
     <string name="login">Login</string>
     <string name="remember_email_and_password">Remember email and password</string>
     <string name="or">Or</string>

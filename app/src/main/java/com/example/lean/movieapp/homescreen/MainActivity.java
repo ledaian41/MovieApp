@@ -25,6 +25,7 @@ import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.common.BaseActivity;
 import com.example.lean.movieapp.login.LoginActivity;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
+import com.example.lean.movieapp.ui.MyViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @BindView(R.id.nav_view)
     NavigationView mNavigationView;
     @BindView(R.id.viewPager)
-    ViewPager viewPager;
+    MyViewPager viewPager;
     @BindView(R.id.tvMovieTitle)
     TextView tvMovieTitle;
     @BindView(R.id.circleIndicator)
@@ -99,7 +100,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mViewPagerAdapter);
-        viewPager.setOffscreenPageLimit(1);
+        viewPager.setAnimationEnabled(true);
+        viewPager.setFadeEnabled(true);
+        viewPager.setFadeFactor(0.6f);
 
         mPopularAdapter = new PopularAdapter();
         mRvPopular.setLayoutManager(new GridLayoutManager(this, 2));

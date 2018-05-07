@@ -3,8 +3,14 @@ package com.example.lean.movieapp.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
+import android.support.v4.view.ViewPropertyAnimatorListenerAdapter;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +41,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     EditText edtPassword;
     @BindView(R.id.tvMovie)
     TextView tvMovie;
+    @BindView(R.id.btnLogin)
+    Button btnLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +59,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         findViewById(R.id.btnLoginGoogle).setOnClickListener(this);
 
         //TODO:ANIMATE tvMovie
+        ViewCompat.animate(tvMovie)
+                .rotationYBy(360.0f)
+                .setInterpolator(new AccelerateInterpolator())
+                .setDuration(1500)
+                .start();
+
     }
 
     @Override
