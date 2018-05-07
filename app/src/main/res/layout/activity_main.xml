@@ -44,11 +44,10 @@
 
                     <com.example.lean.movieapp.ui.MyViewPager
                         android:id="@+id/viewPager"
-                        android:clipToPadding="false"
                         android:layout_width="match_parent"
                         android:layout_height="330dp"
-                        android:overScrollMode="never"
-                        />
+                        android:clipToPadding="false"
+                        android:overScrollMode="never" />
 
                     <TextView
                         android:id="@+id/tvMovieTitle"
@@ -105,6 +104,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@color/background_super_dark"
         android:fitsSystemWindows="true">
 
         <RelativeLayout
@@ -116,7 +116,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:text="@string/sign_out" />
+                android:background="@color/colorPrimary"
+                android:text="@string/sign_out"
+                android:textColor="@color/white" />
         </RelativeLayout>
     </android.support.design.widget.NavigationView>
 </android.support.v4.widget.DrawerLayout>
