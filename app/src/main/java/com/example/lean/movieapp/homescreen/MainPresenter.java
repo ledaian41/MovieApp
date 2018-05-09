@@ -4,13 +4,19 @@ import com.example.lean.movieapp.api.API;
 import com.example.lean.movieapp.api.APIManager;
 import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.DataResponse;
+import com.example.lean.movieapp.model_server.response.MovieResponse;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainPresenter implements MainInterface.presenter {
@@ -24,39 +30,16 @@ public class MainPresenter implements MainInterface.presenter {
     @Override
     public void getTopRated(int page) {
         APIManager.getTopRatedMovies(page)
+                .map(DataResponse::getResults)
+                .flatMap(new Function<List<MovieResponse>, ObservableSource<?>>() {
+                    @Override
+                    public ObservableSource<?> apply(List<MovieResponse> movieResponses) throws Exception {
+                        return Observable.fromArray(movieResponses);
+                    }
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DataResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(DataResponse dataResponse) {
-                        if (view != null) {
-                            if (dataResponse != null) {
-                                if (dataResponse.getResults() != null && !dataResponse.getResults().isEmpty()) {
-                                    view.getTopRatedSuccess(dataResponse.getResults());
-                                } else {
-                                    view.getTopRatedSuccess(null);
-                                }
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (view != null) {
-                            view.getTopRatedFailed(e.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+                .subscribe();
     }
 
     @Override

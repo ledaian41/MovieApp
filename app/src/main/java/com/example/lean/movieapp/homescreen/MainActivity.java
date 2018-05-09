@@ -19,12 +19,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.common.BaseActivity;
 import com.example.lean.movieapp.login.LoginActivity;
+import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 import com.example.lean.movieapp.ui.MyViewPager;
 
@@ -34,6 +37,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.relex.circleindicator.CircleIndicator;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, SearchView.OnQueryTextListener, MainInterface.View {
     @BindView(R.id.toolbar_main)
@@ -52,6 +58,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     RecyclerView mRvPopular;
     @BindView(R.id.scrollView)
     ScrollView scrollView;
+    @BindView(R.id.layoutBody)
+    RelativeLayout layoutBody;
+    @BindView(R.id.rvSearch)
+    RecyclerView rvSearch;
     private ViewPagerAdapter mViewPagerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private SearchView searchView;
@@ -128,11 +138,28 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         switch (item.getItemId()) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+//                mDrawerLayout.openDrawer(GravityCompat.START);
+                Toast.makeText(this, "Close Search", Toast.LENGTH_SHORT).show();
+                clearFocusView();
                 return true;
+            case R.id.action_search:
+                performSearchUI();
+                break;
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void performSearchUI() {
+        layoutBody.setVisibility(GONE);
+        rvSearch.setVisibility(VISIBLE);
+    }
+
+    private void closeSearchUI() {
+        layoutBody.setVisibility(VISIBLE);
+        rvSearch.setVisibility(View.GONE);
     }
 
     @Override
@@ -187,6 +214,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.setPage(1);
+        searchRequest.setQuery(newText.trim());
+        mPresenter.getSearchResult(searchRequest);
         return false;
     }
 
@@ -239,7 +270,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return displayMetrics.heightPixels;
     }
 
-    private void clearFocusView(){
+    private void clearFocusView() {
         scrollView.clearFocus();
     }
 }

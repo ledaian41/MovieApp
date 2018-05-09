@@ -42,61 +42,68 @@
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
-                    android:id="@+id/viewPagerLayout"
+                    android:id="@+id/layoutBody"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center">
+                    android:layout_height="wrap_content">
 
-                    <com.example.lean.movieapp.ui.MyViewPager
-                        android:id="@+id/viewPager"
+                    <RelativeLayout
+                        android:id="@+id/viewPagerLayout"
                         android:layout_width="match_parent"
-                        android:layout_height="400dp"
-                        android:clipToPadding="false"
-                        android:overScrollMode="never" />
-
-                    <TextView
-                        android:id="@+id/tvMovieTitle"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:padding="8dp"
-                        android:textColor="@color/white"
-                        android:textSize="17sp"
-                        tools:text="akshdjkasdjhkasjdhaksjdhas" />
+                        android:gravity="center">
 
-                    <me.relex.circleindicator.CircleIndicator
-                        android:id="@+id/circleIndicator"
+                        <com.example.lean.movieapp.ui.MyViewPager
+                            android:id="@+id/viewPager"
+                            android:layout_width="match_parent"
+                            android:layout_height="400dp"
+                            android:clipToPadding="false"
+                            android:overScrollMode="never" />
+
+                        <TextView
+                            android:id="@+id/tvMovieTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:padding="8dp"
+                            android:textColor="@color/white"
+                            android:textSize="17sp"
+                            tools:text="akshdjkasdjhkasjdhaksjdhas" />
+
+                        <me.relex.circleindicator.CircleIndicator
+                            android:id="@+id/circleIndicator"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp" />
+                    </RelativeLayout>
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cardViewTitle"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp" />
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/viewPagerLayout"
+                        android:layout_marginBottom="4dp"
+                        app:cardCornerRadius="0dp"
+                        app:cardElevation="8dp">
+
+                        <TextView
+                            android:id="@+id/tvPopular"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/background_dark"
+                            android:padding="8dp"
+                            android:paddingTop="8dp"
+                            android:text="Popular"
+                            android:textColor="@color/colorPrimaryDark"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rvPopular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/cardViewTitle" />
                 </RelativeLayout>
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/cardViewTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/viewPagerLayout"
-                    android:layout_marginBottom="4dp"
-                    app:cardCornerRadius="0dp"
-                    app:cardElevation="8dp">
-
-                    <TextView
-                        android:id="@+id/tvPopular"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/background_dark"
-                        android:padding="8dp"
-                        android:paddingTop="8dp"
-                        android:text="Popular"
-                        android:textColor="@color/colorPrimaryDark"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/rvPopular"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/cardViewTitle" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rvSearch"
