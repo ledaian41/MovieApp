@@ -223,6 +223,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Snackbar.make(mDrawerLayout, error, Snackbar.LENGTH_LONG).show();
     }
 
+    @Override
+    public void getSearchResultSuccess(List<MovieResponse> movieResponses) {
+
+    }
+
+    @Override
+    public void getSearchResultFailed(String error) {
+
+    }
+
     private int getHeightScreen() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);

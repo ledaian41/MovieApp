@@ -1,10 +1,11 @@
 package com.example.lean.movieapp.homescreen;
 
+import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 
 import java.util.List;
 
-public class MainInterface {
+class MainInterface {
     interface View {
         void initPresenter();
 
@@ -15,11 +16,17 @@ public class MainInterface {
         void getPopularSuccess(List<MovieResponse> movieResponses);
 
         void getPopularFailed(String error);
+
+        void getSearchResultSuccess(List<MovieResponse> movieResponses);
+
+        void getSearchResultFailed(String error);
     }
 
     interface presenter {
         void getTopRated(int page);
 
         void getPopular(int page);
+
+        void getSearchResult(SearchRequest searchRequest);
     }
 }

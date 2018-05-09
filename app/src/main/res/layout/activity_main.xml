@@ -23,9 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:contentInsetEnd="0dp"
-                app:contentInsetStart="0dp"
                 app:contentInsetStartWithNavigation="0dp"
+                app:subtitleTextColor="@color/white"
                 app:titleTextColor="@android:color/white" />
         </android.support.design.widget.AppBarLayout>
 
@@ -51,7 +50,7 @@
                     <com.example.lean.movieapp.ui.MyViewPager
                         android:id="@+id/viewPager"
                         android:layout_width="match_parent"
-                        android:layout_height="330dp"
+                        android:layout_height="400dp"
                         android:clipToPadding="false"
                         android:overScrollMode="never" />
 

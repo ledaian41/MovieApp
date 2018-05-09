@@ -14,6 +14,11 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:replace="android:theme">
+
+        <provider
+            android:name=".provider.MySuggestionProvider"
+            android:authorities="com.example.lean.movieapp.provider.MySuggestionProvider" />
+
         <activity android:name=".homescreen.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".detail_movie.DetailMovieActivity"></activity>
+        <activity android:name=".detail_movie.DetailMovieActivity" />
     </application>
 
 </manifest>
