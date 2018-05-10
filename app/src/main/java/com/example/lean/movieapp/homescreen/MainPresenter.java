@@ -1,5 +1,7 @@
 package com.example.lean.movieapp.homescreen;
 
+import android.annotation.SuppressLint;
+
 import com.example.lean.movieapp.api.API;
 import com.example.lean.movieapp.api.APIManager;
 import com.example.lean.movieapp.model_server.request.SearchRequest;
@@ -9,11 +11,13 @@ import com.example.lean.movieapp.model_server.response.MovieResponse;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiConsumer;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
@@ -27,19 +31,26 @@ public class MainPresenter implements MainInterface.presenter {
         this.view = view;
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void getTopRated(int page) {
         APIManager.getTopRatedMovies(page)
                 .map(DataResponse::getResults)
-                .flatMap(new Function<List<MovieResponse>, ObservableSource<?>>() {
-                    @Override
-                    public ObservableSource<?> apply(List<MovieResponse> movieResponses) throws Exception {
-                        return Observable.fromArray(movieResponses);
-                    }
-                })
+                .flatMap(Observable::fromIterable)
+                .filter(movieResponse -> movieResponse.getVote_average() >= 8.5)
+                .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe((movieResponses, throwable) -> {
+                    if (view != null) {
+                        if (movieResponses != null && !movieResponses.isEmpty()) {
+                            view.getTopRatedSuccess(movieResponses);
+                        } else {
+                            view.getTopRatedSuccess(null);
+                        }
+                    }
+                });
+
     }
 
     @Override
