@@ -53,40 +53,23 @@ public class MainPresenter implements MainInterface.presenter {
 
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void getPopular(int page) {
         APIManager.getPopularMovies(page)
+                .map(DataResponse::getResults)
+                .flatMap(Observable::fromIterable)
+                .filter(movieResponse -> movieResponse.getVote_average() >= 7)
+                .toList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DataResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(DataResponse dataResponse) {
-                        if (view != null) {
-                            if (dataResponse != null) {
-                                if (dataResponse.getResults() != null && !dataResponse.getResults().isEmpty()) {
-                                    view.getPopularSuccess(dataResponse.getResults());
-                                } else {
-                                    view.getPopularSuccess(null);
-                                }
-                            }
+                .subscribe((movieResponses, throwable) -> {
+                    if (view != null) {
+                        if (movieResponses != null && !movieResponses.isEmpty()) {
+                            view.getPopularSuccess(movieResponses);
+                        } else {
+                            view.getPopularSuccess(null);
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (view != null) {
-                            view.getPopularFailed(e.getMessage());
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-
                     }
                 });
     }
