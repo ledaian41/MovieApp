@@ -16,7 +16,7 @@ public interface API {
     @GET("movie/popular")
     Observable<DataResponse> getPopularMovies(@Query("page") int page);
 
-    @GET("search")
+    @GET("search/movie")
     Observable<DataResponse> getSearchResult(@QueryMap Map<String, String> map);
 
 }

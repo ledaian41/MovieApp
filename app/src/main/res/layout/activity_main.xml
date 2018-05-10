@@ -35,6 +35,7 @@
             android:layout_marginTop="?attr/actionBarSize"
             android:focusable="true"
             android:focusableInTouchMode="true"
+            android:focusedByDefault="true"
             android:overScrollMode="never">
 
             <RelativeLayout
@@ -44,7 +45,10 @@
                 <RelativeLayout
                     android:id="@+id/layoutBody"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:focusedByDefault="true">
 
                     <RelativeLayout
                         android:id="@+id/viewPagerLayout"
@@ -99,6 +103,9 @@
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rvPopular"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:focusedByDefault="true"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/cardViewTitle" />

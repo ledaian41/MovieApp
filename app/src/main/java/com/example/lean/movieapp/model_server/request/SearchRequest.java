@@ -3,15 +3,44 @@ package com.example.lean.movieapp.model_server.request;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class SearchRequest implements Parcelable {
+    @SerializedName("page")
     private int page;
+    @SerializedName("query")
     private String query;
+    @SerializedName("language")
     private String language = "en-US";
+    @SerializedName("include_adult")
     private boolean include_adult = false;
 
+
+    public SearchRequest() {
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public Map<String, String> toQueryMap() {
+        Map<String, String> map = new HashMap<>();
+        if (query != null && !query.isEmpty()) {
+            map.put("query", query);
+        }
+        map.put("page", String.valueOf(page));
+        map.put("include_adult", "true");
+        map.put("language", "en-US");
+
+        return map;
+    }
 
     @Override
     public int describeContents() {
@@ -26,9 +55,6 @@ public class SearchRequest implements Parcelable {
         dest.writeByte(this.include_adult ? (byte) 1 : (byte) 0);
     }
 
-    public SearchRequest() {
-    }
-
     protected SearchRequest(Parcel in) {
         this.page = in.readInt();
         this.query = in.readString();
@@ -36,7 +62,7 @@ public class SearchRequest implements Parcelable {
         this.include_adult = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<SearchRequest> CREATOR = new Parcelable.Creator<SearchRequest>() {
+    public static final Creator<SearchRequest> CREATOR = new Creator<SearchRequest>() {
         @Override
         public SearchRequest createFromParcel(Parcel source) {
             return new SearchRequest(source);
@@ -47,30 +73,4 @@ public class SearchRequest implements Parcelable {
             return new SearchRequest[size];
         }
     };
-
-    public void setPage(int page) {
-        this.page = page;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public void setInclude_adult(boolean include_adult) {
-        this.include_adult = include_adult;
-    }
-
-    public Map<String, String> toQueryMap() {
-        Map<String, String> map = new HashMap<>();
-        if (query != null && !query.trim().isEmpty()) map.put("query", query);
-        map.put("page", String.valueOf(page));
-        map.put("include_adult", "true");
-        map.put("language", "en-US");
-
-        return map;
-    }
 }

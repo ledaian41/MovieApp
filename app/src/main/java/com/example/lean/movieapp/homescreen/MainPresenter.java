@@ -77,7 +77,7 @@ public class MainPresenter implements MainInterface.presenter {
     @Override
     public void getSearchResult(SearchRequest searchRequest) {
         APIManager.searchMovie(searchRequest.toQueryMap())
-                .debounce(300, TimeUnit.MILLISECONDS)
+                .debounce(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DataResponse>() {
@@ -91,9 +91,9 @@ public class MainPresenter implements MainInterface.presenter {
                         if (view != null) {
                             if (dataResponse != null) {
                                 if (dataResponse.getResults() != null && !dataResponse.getResults().isEmpty()) {
-                                    view.getPopularSuccess(dataResponse.getResults());
+                                    view.getSearchResultSuccess(dataResponse.getResults());
                                 } else {
-                                    view.getPopularSuccess(null);
+                                    view.getSearchResultSuccess(null);
                                 }
                             }
                         }

@@ -8,10 +8,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -69,6 +71,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private SearchView searchView;
     private MainPresenter mPresenter;
     private PopularAdapter mPopularAdapter;
+    private SearchAdapter mSearchAdapter;
     private List<MovieResponse> mTopMovieList = new ArrayList<>();
     private List<MovieResponse> mPopularMovieList = new ArrayList<>();
     private List<MovieResponse> mSearchResultList = new ArrayList<>();
@@ -96,10 +99,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void initView() {
         ButterKnife.bind(this);
-        mToolbar = findViewById(R.id.toolbar_main);
-        mNavigationView = findViewById(R.id.nav_view);
-        mDrawerLayout = findViewById(R.id.drawer_layout);
-        viewPager = findViewById(R.id.viewPager);
         findViewById(R.id.btnLogout).setOnClickListener(this);
         viewPager.addOnPageChangeListener(new OnPageChangeAdapter() {
             @Override
@@ -123,6 +122,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mPopularAdapter = new PopularAdapter();
         mRvPopular.setLayoutManager(new GridLayoutManager(this, 2));
         mRvPopular.setAdapter(mPopularAdapter);
+
+        mSearchAdapter = new SearchAdapter();
+        rvSearch.setLayoutManager(new LinearLayoutManager(this));
+        rvSearch.setAdapter(mSearchAdapter);
 
     }
 
@@ -203,9 +206,26 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu_toolbar, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+        setupBackButtonSearchView(searchItem);
         searchView = (SearchView) searchItem.getActionView();
         searchView.setOnQueryTextListener(this);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    private void setupBackButtonSearchView(MenuItem searchItem) {
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                clearFocusView();
+                closeSearchUI();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -216,11 +236,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        SearchRequest searchRequest = new SearchRequest();
-        searchRequest.setPage(1);
-        searchRequest.setQuery(newText.trim());
-        mPresenter.getSearchResult(searchRequest);
-        return false;
+        if (!newText.trim().isEmpty()) {
+            SearchRequest searchRequest = new SearchRequest();
+            searchRequest.setPage(1);
+            searchRequest.setQuery(newText.trim());
+            mPresenter.getSearchResult(searchRequest);
+        }
+        return true;
     }
 
     @Override
@@ -258,22 +280,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void getSearchResultSuccess(List<MovieResponse> movieResponses) {
-
+        if (movieResponses != null) {
+            mSearchAdapter.setMovies(movieResponses);
+        }
     }
 
     @Override
     public void getSearchResultFailed(String error) {
-
-    }
-
-    private int getHeightScreen() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        return displayMetrics.heightPixels;
+        Snackbar.make(mDrawerLayout, error, Snackbar.LENGTH_LONG).show();
     }
 
     private void clearFocusView() {
-        scrollView.clearFocus();
+//        scrollView.clearFocus();
+//        layoutBody.setFocusable(false);
+//        mRvPopular.setFocusable(false);
     }
 
 }
