@@ -8,25 +8,27 @@
         android:layout_height="match_parent"
         android:background="@color/background_super_dark">
 
+        <TextView
+            android:id="@+id/tvMovie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/layoutLogin"
+            android:layout_marginBottom="30dp"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="The Movie"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold" />
 
         <RelativeLayout
+            android:id="@+id/layoutLogin"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_vertical"
             android:paddingEnd="15dp"
             android:paddingStart="15dp">
-
-            <TextView
-                android:id="@+id/tvMovie"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/edtEmail"
-                android:gravity="center"
-                android:padding="8dp"
-                android:text="The Movie"
-                android:textColor="@color/white"
-                android:textSize="32sp"
-                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/edtEmail"
