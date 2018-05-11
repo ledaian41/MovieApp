@@ -1,5 +1,6 @@
 package com.example.lean.movieapp.homescreen;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,7 +22,8 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private List<MovieResponse> mMovieList;
 
-    SearchAdapter() {}
+    SearchAdapter() {
+    }
 
     @NonNull
     @Override
@@ -29,12 +31,25 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return new PopularViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_search, parent, false));
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         MovieResponse movieResponse = mMovieList.get(holder.getAdapterPosition());
         PopularViewHolder popularViewHolder = (PopularViewHolder) holder;
-        popularViewHolder.tvTitle.setText(movieResponse.getOriginal_title());
-        Glide.with(popularViewHolder.itemView.getContext()).load(movieResponse.getPoster_path()).into(popularViewHolder.imgMovie);
+        String releaseYear;
+        String[] releaseDate;
+        if (movieResponse.getRelease_date() != null && !movieResponse.getRelease_date().isEmpty()) {
+            releaseDate = movieResponse.getRelease_date().split("-");
+            if (releaseDate.length != 0) {
+                releaseYear = releaseDate[0];
+            } else {
+                releaseYear = "";
+            }
+        } else {
+            releaseYear = "";
+        }
+        popularViewHolder.tvTitle.setText(movieResponse.getOriginal_title() + " (" + releaseYear + ")");
+        Glide.with(popularViewHolder.itemView.getContext()).load(releaseYear).into(popularViewHolder.imgMovie);
     }
 
     @Override
