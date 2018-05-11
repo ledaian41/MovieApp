@@ -1,5 +1,6 @@
 package com.example.lean.movieapp.homescreen;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -29,17 +30,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lean.movieapp.R;
+import com.example.lean.movieapp.api.APIManager;
 import com.example.lean.movieapp.common.BaseActivity;
+import com.example.lean.movieapp.common.RxUtils;
 import com.example.lean.movieapp.login.LoginActivity;
 import com.example.lean.movieapp.model_server.request.SearchRequest;
+import com.example.lean.movieapp.model_server.response.DataResponse;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 import com.example.lean.movieapp.ui.MyViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiConsumer;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
 import me.relex.circleindicator.CircleIndicator;
 
 import static android.view.View.GONE;
@@ -75,6 +88,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private List<MovieResponse> mTopMovieList = new ArrayList<>();
     private List<MovieResponse> mPopularMovieList = new ArrayList<>();
     private List<MovieResponse> mSearchResultList = new ArrayList<>();
+    private SearchRequest mSearchRequest = new SearchRequest();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +120,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 tvMovieTitle.setText(mTopMovieList.get(position).getTitle());
             }
         });
+
+        mSearchRequest.setPage(1);
     }
 
     private void setupView() {
@@ -201,6 +217,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -208,7 +225,35 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         MenuItem searchItem = menu.findItem(R.id.action_search);
         setupBackButtonSearchView(searchItem);
         searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(this);
+//        searchView.setOnQueryTextListener(this);
+        RxUtils.bindSearchView(searchView)
+                .debounce(300, TimeUnit.MILLISECONDS)
+                .filter(s -> !s.isEmpty())
+                .flatMap(string -> {
+                    mSearchRequest.setQuery(string);
+                    return APIManager.searchMovie(mSearchRequest.toQueryMap());
+                })
+                .subscribe(new Observer<DataResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(DataResponse dataResponse) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
         return super.onCreateOptionsMenu(menu);
     }
 
