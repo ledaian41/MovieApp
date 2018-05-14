@@ -445,4 +445,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Toast.makeText(this, popularMovie.getTitle(), Toast.LENGTH_SHORT).show();
     }
 
+    private void showDetailUI() {
+
+    }
+
+    private void closeDetailUI() {
+
+    }
 }
