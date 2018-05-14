@@ -3,6 +3,7 @@ package com.example.lean.movieapp.homescreen;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -39,6 +40,24 @@ import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.DataResponse;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 import com.example.lean.movieapp.ui.MyViewPager;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.dash.DashChunkSource;
+import com.google.android.exoplayer2.source.dash.DashMediaSource;
+import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +101,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     RelativeLayout layoutBody;
     @BindView(R.id.rvSearch)
     RecyclerView rvSearch;
+    @BindView(R.id.playerView)
+    PlayerView playerView;
+    @BindView(R.id.layoutDetailBody)
+    RelativeLayout layoutDetailBody;
+    @BindView(R.id.layoutDetail)
+    RelativeLayout layoutDetail;
+
     private ViewPagerAdapter mViewPagerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private SearchView searchView;
@@ -92,6 +118,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private List<MovieResponse> mPopularMovieList = new ArrayList<>();
     private List<MovieResponse> mSearchResultList = new ArrayList<>();
     private SearchRequest mSearchRequest = new SearchRequest();
+    private boolean playWhenReady;
+    private long playbackPosition;
+    private int currentWindow;
+    private static final DefaultBandwidthMeter BANDWIDTH_METER =
+            new DefaultBandwidthMeter();
+    private SimpleExoPlayer player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +133,51 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         initView();
         setupView();
         callApi();
+    }
+
+    private MediaSource buildMediaSource(Uri uri) {
+        DataSource.Factory dataSourceFactory =
+                new DefaultHttpDataSourceFactory("ua", BANDWIDTH_METER);
+
+        return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+    }
+
+    private void initializePlayer() {
+        if (player == null) {
+            TrackSelection.Factory adaptiveTrackSelectionFactory =
+                    new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
+            player = ExoPlayerFactory.newSimpleInstance(this,
+                    new DefaultTrackSelector(adaptiveTrackSelectionFactory)
+            );
+            playerView.setPlayer(player);
+        }
+
+        player.setPlayWhenReady(playWhenReady);
+        player.seekTo(currentWindow, playbackPosition);
+        //TODO pass URL from Internet
+        Uri uri;
+
+        MediaSource mediaSource = buildMediaSource(uri);
+        player.prepare(mediaSource, true, false);
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            playbackPosition = player.getCurrentPosition();
+            currentWindow = player.getCurrentWindowIndex();
+            playWhenReady = player.getPlayWhenReady();
+            player.release();
+            player = null;
+        }
+    }
+
+    private void hideSystemUi() {
+        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
     }
 
     private void callApi() {
@@ -196,6 +273,34 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onStart();
         if (!isLogin()) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }
+        if (Util.SDK_INT > 23) {
+            initializePlayer();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hideSystemUi();
+        if (Util.SDK_INT <= 23 || player == null) {
+            initializePlayer();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
         }
     }
 
@@ -327,5 +432,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //        layoutBody.setFocusable(false);
 //        mRvPopular.setFocusable(false);
     }
+
 
 }
