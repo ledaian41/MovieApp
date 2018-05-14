@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 
@@ -49,7 +50,14 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             releaseYear = "";
         }
         popularViewHolder.tvTitle.setText(movieResponse.getOriginal_title() + " (" + releaseYear + ")");
-        Glide.with(popularViewHolder.itemView.getContext()).load(releaseYear).into(popularViewHolder.imgMovie);
+        Glide.with(popularViewHolder.itemView.getContext())
+                .applyDefaultRequestOptions(
+                        new RequestOptions()
+                                .placeholder(R.drawable.placeholder)
+                                .centerCrop()
+                                .dontAnimate()
+                                .dontTransform())
+                .load(releaseYear).into(popularViewHolder.imgMovie);
     }
 
     @Override

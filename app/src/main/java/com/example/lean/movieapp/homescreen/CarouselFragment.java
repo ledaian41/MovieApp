@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.common.Utils;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
@@ -56,7 +57,14 @@ public class CarouselFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         imgMovie.setOnClickListener(this);
-        Glide.with(view.getContext()).load(mMovie.getPoster_path()).into(imgMovie);
+        Glide.with(view.getContext())
+                .applyDefaultRequestOptions(
+                        new RequestOptions()
+                                .placeholder(R.drawable.placeholder)
+                                .centerCrop()
+                                .dontAnimate()
+                                .dontTransform())
+                .load(mMovie.getPoster_path()).into(imgMovie);
     }
 
     @Override

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 
@@ -34,7 +35,14 @@ public class PopularAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         MovieResponse movieResponse = mMovieList.get(holder.getAdapterPosition());
         PopularViewHolder popularViewHolder = (PopularViewHolder) holder;
         popularViewHolder.tvTitle.setText(movieResponse.getOriginal_title());
-        Glide.with(popularViewHolder.itemView.getContext()).load(movieResponse.getPoster_path()).into(popularViewHolder.imgMovie);
+        Glide.with(popularViewHolder.itemView.getContext())
+                .applyDefaultRequestOptions(
+                        new RequestOptions()
+                                .placeholder(R.drawable.placeholder)
+                                .centerCrop()
+                                .dontAnimate()
+                                .dontTransform())
+                .load(movieResponse.getPoster_path()).into(popularViewHolder.imgMovie);
     }
 
     @Override
