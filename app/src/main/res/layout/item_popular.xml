@@ -2,9 +2,13 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:cardView="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="200dp"
     android:layout_margin="4dp"
+    android:clickable="true"
+    android:onClick="onPopularClick"
+    android:focusable="true"
     cardView:cardCornerRadius="8dp"
     cardView:cardElevation="8dp">
 

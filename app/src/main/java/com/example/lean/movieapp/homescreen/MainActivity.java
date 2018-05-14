@@ -59,6 +59,10 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -155,10 +159,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
         //TODO pass URL from Internet
-        Uri uri;
+//        Uri uri = Uri.parse();
 
-        MediaSource mediaSource = buildMediaSource(uri);
-        player.prepare(mediaSource, true, false);
+//        MediaSource mediaSource = buildMediaSource(uri);
+//        player.prepare(mediaSource, true, false);
     }
 
     private void releasePlayer() {
@@ -277,6 +281,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (Util.SDK_INT > 23) {
             initializePlayer();
         }
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -302,6 +307,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (Util.SDK_INT > 23) {
             releasePlayer();
         }
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -433,5 +439,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //        mRvPopular.setFocusable(false);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void popularEvent(PopularAdapter.PopularEvent popularEvent) {
+        MovieResponse popularMovie = mPopularMovieList.get(popularEvent.getPosition());
+        Toast.makeText(this, popularMovie.getTitle(), Toast.LENGTH_SHORT).show();
+    }
 
 }

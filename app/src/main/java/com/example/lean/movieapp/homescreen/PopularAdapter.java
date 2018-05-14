@@ -7,22 +7,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class PopularAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<MovieResponse> mMovieList;
+    private static List<MovieResponse> mMovieList;
 
-    PopularAdapter() {}
+    PopularAdapter() {
+    }
 
     @NonNull
     @Override
@@ -52,7 +57,7 @@ public class PopularAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
     public void setMovies(List<MovieResponse> movieResponses) {
-        this.mMovieList = movieResponses;
+        mMovieList = movieResponses;
         notifyDataSetChanged();
     }
 
@@ -65,6 +70,23 @@ public class PopularAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         PopularViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        @OnClick(R.id.cardView)
+        public void onClick() {
+            EventBus.getDefault().post(new PopularEvent(getAdapterPosition()));
+        }
+    }
+
+    public static class PopularEvent {
+        private int mPosition;
+
+        public PopularEvent(int mPosition) {
+            this.mPosition = mPosition;
+        }
+
+        public int getPosition() {
+            return mPosition;
         }
     }
 }
