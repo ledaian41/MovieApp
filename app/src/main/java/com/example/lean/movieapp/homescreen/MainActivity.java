@@ -141,22 +141,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         initView();
         setupView();
         callApi();
-        intentSearch(getIntent());
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-        intentSearch(intent);
-    }
-
-    private void intentSearch(Intent intent) {
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
-                    MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
-            suggestions.saveRecentQuery(query, null);
-        }
     }
 
     private MediaSource buildMediaSource(Uri uri) {
@@ -361,6 +345,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         // Assumes current activity is the searchable activity
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
+        searchView.setQueryHint("search movie");
         RxUtils.bindSearchView(searchView)
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .filter(s -> !s.isEmpty())
@@ -373,7 +358,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(mSearchAdapter::setMovies);
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     private void setupBackButtonSearchView(MenuItem searchItem) {
