@@ -3,6 +3,7 @@ package com.example.lean.movieapp.api;
 
 import com.example.lean.movieapp.BuildConfig;
 import com.example.lean.movieapp.model_server.response.DataResponse;
+import com.example.lean.movieapp.model_server.response.Trailers;
 
 import java.util.Map;
 
@@ -47,7 +48,11 @@ public class APIManager {
         return getAPI().create(API.class).getTopRatedMovies(page);
     }
 
-    public static Observable<DataResponse> searchMovie(Map<String, String> searchRequest){
+    public static Observable<DataResponse> searchMovie(Map<String, String> searchRequest) {
         return getAPI().create(API.class).getSearchResult(searchRequest);
+    }
+
+    public static Observable<Trailers> getTrailerMovie(String id) {
+        return getAPI().create(API.class).getTrailerMovie(id);
     }
 }

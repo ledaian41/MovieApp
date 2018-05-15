@@ -7,6 +7,7 @@ import com.example.lean.movieapp.api.APIManager;
 import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.DataResponse;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
+import com.example.lean.movieapp.model_server.response.Trailers;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -112,5 +113,20 @@ public class MainPresenter implements MainInterface.presenter {
                     }
                 });
 
+    }
+
+    @SuppressLint("CheckResult")
+    @Override
+    public void getTrailerMovie(String id) {
+        APIManager.getTrailerMovie(id)
+                .map(trailers -> trailers.getYoutube().get(0))
+                .filter(youtube -> youtube != null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(youtube -> {
+                    if (view != null) {
+                        view.getTrailerMovieSuccess(youtube);
+                    }
+                });
     }
 }

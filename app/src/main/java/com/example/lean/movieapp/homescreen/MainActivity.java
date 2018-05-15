@@ -7,14 +7,11 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.SearchRecentSuggestions;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.GridLayoutManager;
@@ -22,9 +19,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,24 +36,18 @@ import com.example.lean.movieapp.login.LoginActivity;
 import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.DataResponse;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
-import com.example.lean.movieapp.provider.MySuggestionProvider;
+import com.example.lean.movieapp.model_server.response.Trailers;
 import com.example.lean.movieapp.ui.MyViewPager;
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.dash.DashChunkSource;
-import com.google.android.exoplayer2.source.dash.DashMediaSource;
-import com.google.android.exoplayer2.source.dash.DefaultDashChunkSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
@@ -73,15 +61,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.BiConsumer;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import me.relex.circleindicator.CircleIndicator;
 
@@ -115,6 +95,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     RelativeLayout layoutDetailBody;
     @BindView(R.id.layoutDetail)
     RelativeLayout layoutDetail;
+    @BindView(R.id.tvMovieDetailTitle)
+    TextView tvDetailTitle;
+    @BindView(R.id.tvDescription)
+    TextView tvDescription;
+    @BindView(R.id.appBarLayout)
+    AppBarLayout appBarLayout;
 
     private ViewPagerAdapter mViewPagerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -146,11 +132,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private MediaSource buildMediaSource(Uri uri) {
         DataSource.Factory dataSourceFactory =
                 new DefaultHttpDataSourceFactory("ua", BANDWIDTH_METER);
-
         return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
     }
 
-    private void initializePlayer() {
+    private void initializePlayer(String video) {
         if (player == null) {
             TrackSelection.Factory adaptiveTrackSelectionFactory =
                     new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
@@ -163,10 +148,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
         //TODO pass URL from Internet
-//        Uri uri = Uri.parse();
+        Uri uri = Uri.parse(video);
 
-//        MediaSource mediaSource = buildMediaSource(uri);
-//        player.prepare(mediaSource, true, false);
+        MediaSource mediaSource = buildMediaSource(uri);
+        player.prepare(mediaSource, true, false);
+
+        showDetailUI();
     }
 
     private void releasePlayer() {
@@ -279,20 +266,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (!isLogin()) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
         }
-        if (Util.SDK_INT > 23) {
-            initializePlayer();
-        }
         EventBus.getDefault().register(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        hideSystemUi();
-        if (Util.SDK_INT <= 23 || player == null) {
-            initializePlayer();
-        }
-    }
 
     @Override
     protected void onPause() {
@@ -370,7 +346,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                clearFocusView();
+//                clearFocusView();
                 closeSearchUI();
                 return true;
             }
@@ -439,23 +415,35 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Snackbar.make(mDrawerLayout, error, Snackbar.LENGTH_LONG).show();
     }
 
+    @Override
+    public void getTrailerMovieSuccess(Trailers.Youtube youtube) {
+        showDetailUI();
+        initializePlayer(youtube.getSource());
+    }
+
     private void clearFocusView() {
-//        scrollView.clearFocus();
-//        layoutBody.setFocusable(false);
-//        mRvPopular.setFocusable(false);
+        scrollView.clearFocus();
+        layoutBody.setFocusable(false);
+        mRvPopular.setFocusable(false);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void popularEvent(PopularAdapter.PopularEvent popularEvent) {
         MovieResponse popularMovie = mPopularMovieList.get(popularEvent.getPosition());
-        Toast.makeText(this, popularMovie.getTitle(), Toast.LENGTH_SHORT).show();
+        mPresenter.getTrailerMovie(String.valueOf(popularMovie.getId()));
+        tvDetailTitle.setText(popularMovie.getTitle());
+        tvDescription.setText(popularMovie.getOverview());
     }
 
     private void showDetailUI() {
-
+        layoutDetail.setVisibility(VISIBLE);
+        scrollView.setVisibility(GONE);
+        appBarLayout.setVisibility(GONE);
     }
 
     private void closeDetailUI() {
-
+        layoutDetail.setVisibility(GONE);
+        scrollView.setVisibility(VISIBLE);
+        appBarLayout.setVisibility(VISIBLE);
     }
 }

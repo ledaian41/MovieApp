@@ -2,6 +2,7 @@ package com.example.lean.movieapp.homescreen;
 
 import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
+import com.example.lean.movieapp.model_server.response.Trailers;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ class MainInterface {
         void getSearchResultSuccess(List<MovieResponse> movieResponses);
 
         void getSearchResultFailed(String error);
+
+        void getTrailerMovieSuccess(Trailers.Youtube trailers);
     }
 
     interface presenter {
@@ -28,5 +31,7 @@ class MainInterface {
         void getPopular(int page);
 
         void getSearchResult(SearchRequest searchRequest);
+
+        void getTrailerMovie(String id);
     }
 }
