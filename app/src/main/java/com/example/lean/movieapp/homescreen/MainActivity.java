@@ -1,10 +1,13 @@
 package com.example.lean.movieapp.homescreen;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.SearchRecentSuggestions;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -39,6 +42,7 @@ import com.example.lean.movieapp.login.LoginActivity;
 import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.DataResponse;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
+import com.example.lean.movieapp.provider.MySuggestionProvider;
 import com.example.lean.movieapp.ui.MyViewPager;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -137,6 +141,22 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         initView();
         setupView();
         callApi();
+        intentSearch(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        intentSearch(intent);
+    }
+
+    private void intentSearch(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this,
+                    MySuggestionProvider.AUTHORITY, MySuggestionProvider.MODE);
+            suggestions.saveRecentQuery(query, null);
+        }
     }
 
     private MediaSource buildMediaSource(Uri uri) {
@@ -233,7 +253,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
         // and will not render the hamburger icon without it.
         return new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open, R.string.drawer_close);
-
     }
 
     @Override
@@ -243,9 +262,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         switch (item.getItemId()) {
             case android.R.id.home:
-//                mDrawerLayout.openDrawer(GravityCompat.START);
-                Toast.makeText(this, "Close Search", Toast.LENGTH_SHORT).show();
-                clearFocusView();
+                mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.action_search:
                 performSearchUI();
@@ -338,8 +355,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         menuInflater.inflate(R.menu.menu_toolbar, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         setupBackButtonSearchView(searchItem);
+        // Get the SearchView and set the searchable configuration
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = (SearchView) searchItem.getActionView();
-//        searchView.setOnQueryTextListener(this);
+        // Assumes current activity is the searchable activity
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);// Do not iconify the widget; expand it by default
         RxUtils.bindSearchView(searchView)
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .filter(s -> !s.isEmpty())

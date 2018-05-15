@@ -15,23 +15,28 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning"
         tools:replace="android:theme">
 
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".homescreen.MainActivity" />
+
         <provider
             android:name=".provider.MySuggestionProvider"
             android:authorities="com.example.lean.movieapp.provider.MySuggestionProvider" />
 
         <activity android:name=".homescreen.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity android:name=".login.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".detail_movie.DetailMovieActivity" />
     </application>
 
 </manifest>
