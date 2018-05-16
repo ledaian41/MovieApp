@@ -23,7 +23,10 @@
             android:name=".provider.MySuggestionProvider"
             android:authorities="com.example.lean.movieapp.provider.MySuggestionProvider" />
 
-        <activity android:name=".homescreen.MainActivity">
+        <activity
+            android:name=".homescreen.MainActivity"
+            android:configChanges="orientation|screenSize|keyboard"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -31,7 +34,10 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".login.LoginActivity">
+        <activity
+            android:name=".login.LoginActivity"
+            android:configChanges="keyboard|screenSize|orientation"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

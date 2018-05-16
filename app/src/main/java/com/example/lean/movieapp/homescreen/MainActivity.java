@@ -113,6 +113,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private List<MovieResponse> mPopularMovieList = new ArrayList<>();
     private List<MovieResponse> mSearchResultList = new ArrayList<>();
     private SearchRequest mSearchRequest = new SearchRequest();
+    private boolean isWatchingVideo = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -271,6 +272,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
@@ -415,6 +422,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                         // do any work here to cue video, play video, etc.
                         youTubePlayer.cueVideo(source);
                     }
+
                     @Override
                     public void onInitializationFailure(YouTubePlayer.Provider provider,
                                                         YouTubeInitializationResult youTubeInitializationResult) {
