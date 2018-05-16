@@ -129,9 +129,10 @@
             android:layout_height="match_parent"
             android:visibility="gone">
 
-            <com.google.android.exoplayer2.ui.PlayerView
+            <fragment
                 android:id="@+id/playerView"
                 android:layout_width="match_parent"
+                android:name="com.google.android.youtube.player.YouTubePlayerFragment"
                 android:layout_height="256dp" />
 
             <RelativeLayout

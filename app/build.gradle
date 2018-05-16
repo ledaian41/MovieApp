@@ -60,6 +60,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
     implementation 'me.relex:circleindicator:1.2.2@aar'
+    implementation 'com.github.pedrovgs:draggablepanel:1.9'
     implementation 'com.ms-square:expandableTextView:0.1.4'
 }
 

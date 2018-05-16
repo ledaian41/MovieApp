@@ -48,7 +48,7 @@ public class Trailers {
         }
 
         public String getSource() {
-            return "https://www.youtube.com/watch?v=" + source;
+            return source;
         }
 
         public String getSize() {

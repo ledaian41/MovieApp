@@ -50,6 +50,9 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -89,8 +92,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     RelativeLayout layoutBody;
     @BindView(R.id.rvSearch)
     RecyclerView rvSearch;
-    @BindView(R.id.playerView)
-    PlayerView playerView;
     @BindView(R.id.layoutDetailBody)
     RelativeLayout layoutDetailBody;
     @BindView(R.id.layoutDetail)
@@ -112,12 +113,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private List<MovieResponse> mPopularMovieList = new ArrayList<>();
     private List<MovieResponse> mSearchResultList = new ArrayList<>();
     private SearchRequest mSearchRequest = new SearchRequest();
-    private boolean playWhenReady;
-    private long playbackPosition;
-    private int currentWindow;
-    private static final DefaultBandwidthMeter BANDWIDTH_METER =
-            new DefaultBandwidthMeter();
-    private SimpleExoPlayer player;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,51 +124,51 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         callApi();
     }
 
-    private MediaSource buildMediaSource(Uri uri) {
-        DataSource.Factory dataSourceFactory =
-                new DefaultHttpDataSourceFactory("ua", BANDWIDTH_METER);
-        return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
-    }
+//    private MediaSource buildMediaSource(Uri uri) {
+//        DataSource.Factory dataSourceFactory =
+//                new DefaultHttpDataSourceFactory("ua", BANDWIDTH_METER);
+//        return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
+//    }
 
-    private void initializePlayer(String video) {
-        if (player == null) {
-            TrackSelection.Factory adaptiveTrackSelectionFactory =
-                    new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
-            player = ExoPlayerFactory.newSimpleInstance(this,
-                    new DefaultTrackSelector(adaptiveTrackSelectionFactory)
-            );
-            playerView.setPlayer(player);
-        }
+//    private void initializePlayer(String video) {
+//        if (player == null) {
+//            TrackSelection.Factory adaptiveTrackSelectionFactory =
+//                    new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
+//            player = ExoPlayerFactory.newSimpleInstance(this,
+//                    new DefaultTrackSelector(adaptiveTrackSelectionFactory)
+//            );
+//            playerView.setPlayer(player);
+//        }
+//
+//        player.setPlayWhenReady(playWhenReady);
+//        player.seekTo(currentWindow, playbackPosition);
+//        //TODO pass URL from Internet
+//        Uri uri = Uri.parse(video);
+//
+//        MediaSource mediaSource = buildMediaSource(uri);
+//        player.prepare(mediaSource, true, false);
+//
+//        showDetailUI();
+//    }
 
-        player.setPlayWhenReady(playWhenReady);
-        player.seekTo(currentWindow, playbackPosition);
-        //TODO pass URL from Internet
-        Uri uri = Uri.parse(video);
+//    private void releasePlayer() {
+//        if (player != null) {
+//            playbackPosition = player.getCurrentPosition();
+//            currentWindow = player.getCurrentWindowIndex();
+//            playWhenReady = player.getPlayWhenReady();
+//            player.release();
+//            player = null;
+//        }
+//    }
 
-        MediaSource mediaSource = buildMediaSource(uri);
-        player.prepare(mediaSource, true, false);
-
-        showDetailUI();
-    }
-
-    private void releasePlayer() {
-        if (player != null) {
-            playbackPosition = player.getCurrentPosition();
-            currentWindow = player.getCurrentWindowIndex();
-            playWhenReady = player.getPlayWhenReady();
-            player.release();
-            player = null;
-        }
-    }
-
-    private void hideSystemUi() {
-        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-    }
+//    private void hideSystemUi() {
+//        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+//                | View.SYSTEM_UI_FLAG_FULLSCREEN
+//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+//    }
 
     private void callApi() {
         mPresenter.getPopular(1);
@@ -269,21 +264,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         EventBus.getDefault().register(this);
     }
 
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (Util.SDK_INT <= 23) {
-            releasePlayer();
-        }
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
-        if (Util.SDK_INT > 23) {
-            releasePlayer();
-        }
         EventBus.getDefault().unregister(this);
     }
 
@@ -418,7 +401,26 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void getTrailerMovieSuccess(Trailers.Youtube youtube) {
         showDetailUI();
-        initializePlayer(youtube.getSource());
+        initializeYoutubeFragment(youtube.getSource());
+    }
+
+    private void initializeYoutubeFragment(String source) {
+        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
+                getFragmentManager().findFragmentById(R.id.playerView);
+        youtubeFragment.initialize("AIzaSyAbAk5uEFOoWnq7pQ_lqBgVj0l1NT_0aWs",
+                new YouTubePlayer.OnInitializedListener() {
+                    @Override
+                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
+                                                        YouTubePlayer youTubePlayer, boolean b) {
+                        // do any work here to cue video, play video, etc.
+                        youTubePlayer.cueVideo(source);
+                    }
+                    @Override
+                    public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                                        YouTubeInitializationResult youTubeInitializationResult) {
+
+                    }
+                });
     }
 
     private void clearFocusView() {
