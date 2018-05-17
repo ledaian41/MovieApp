@@ -5,12 +5,14 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Movie;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -37,6 +39,7 @@ import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.DataResponse;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 import com.example.lean.movieapp.model_server.response.Trailers;
+import com.example.lean.movieapp.ui.DraggablePanel;
 import com.example.lean.movieapp.ui.MyViewPager;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -53,6 +56,7 @@ import com.google.android.exoplayer2.util.Util;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -92,16 +96,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     RelativeLayout layoutBody;
     @BindView(R.id.rvSearch)
     RecyclerView rvSearch;
-    @BindView(R.id.layoutDetailBody)
-    RelativeLayout layoutDetailBody;
-    @BindView(R.id.layoutDetail)
-    RelativeLayout layoutDetail;
-    @BindView(R.id.tvMovieDetailTitle)
-    TextView tvDetailTitle;
-    @BindView(R.id.tvDescription)
-    TextView tvDescription;
     @BindView(R.id.appBarLayout)
     AppBarLayout appBarLayout;
+    @BindView(R.id.draggable_panel)
+    DraggablePanel draggablePanel;
 
     private ViewPagerAdapter mViewPagerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -114,6 +112,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private List<MovieResponse> mSearchResultList = new ArrayList<>();
     private SearchRequest mSearchRequest = new SearchRequest();
     private boolean isWatchingVideo = false;
+    private YouTubePlayer youtubePlayer;
+    private YouTubePlayerSupportFragment youtubeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +123,39 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         initView();
         setupView();
         callApi();
+    }
+
+    private void initializeDraggablePanel(MovieResponse movie) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        youtubeFragment = new YouTubePlayerSupportFragment();
+        fragmentTransaction.replace(R.id.drag_view, new YouTubePlayerSupportFragment());
+        fragmentTransaction.commit();
+        draggablePanel.setFragmentManager(getSupportFragmentManager());
+        draggablePanel.setTopFragment(youtubeFragment);
+        draggablePanel.setBottomFragment(DetailFragment.newInstance(movie));
+        draggablePanel.initializeView();
+
+    }
+
+    private void initializeYoutubeFragment(String videoKey) {
+        youtubeFragment.initialize("AIzaSyAbAk5uEFOoWnq7pQ_lqBgVj0l1NT_0aWs", new YouTubePlayer.OnInitializedListener() {
+
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider,
+                                                YouTubePlayer player, boolean wasRestored) {
+                if (!wasRestored) {
+                    youtubePlayer = player;
+                    youtubePlayer.cueVideo(videoKey);
+                    youtubePlayer.setShowFullscreenButton(true);
+                }
+
+            }
+
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider,
+                                                YouTubeInitializationResult error) {
+            }
+        });
     }
 
 //    private MediaSource buildMediaSource(Uri uri) {
@@ -407,53 +440,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public void getTrailerMovieSuccess(Trailers.Youtube youtube) {
-        showDetailUI();
         initializeYoutubeFragment(youtube.getSource());
-    }
-
-    private void initializeYoutubeFragment(String source) {
-        YouTubePlayerFragment youtubeFragment = (YouTubePlayerFragment)
-                getFragmentManager().findFragmentById(R.id.playerView);
-        youtubeFragment.initialize("AIzaSyAbAk5uEFOoWnq7pQ_lqBgVj0l1NT_0aWs",
-                new YouTubePlayer.OnInitializedListener() {
-                    @Override
-                    public void onInitializationSuccess(YouTubePlayer.Provider provider,
-                                                        YouTubePlayer youTubePlayer, boolean b) {
-                        // do any work here to cue video, play video, etc.
-                        youTubePlayer.cueVideo(source);
-                    }
-
-                    @Override
-                    public void onInitializationFailure(YouTubePlayer.Provider provider,
-                                                        YouTubeInitializationResult youTubeInitializationResult) {
-
-                    }
-                });
-    }
-
-    private void clearFocusView() {
-        scrollView.clearFocus();
-        layoutBody.setFocusable(false);
-        mRvPopular.setFocusable(false);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void popularEvent(PopularAdapter.PopularEvent popularEvent) {
         MovieResponse popularMovie = mPopularMovieList.get(popularEvent.getPosition());
+        initializeDraggablePanel(popularMovie);
         mPresenter.getTrailerMovie(String.valueOf(popularMovie.getId()));
-        tvDetailTitle.setText(popularMovie.getTitle());
-        tvDescription.setText(popularMovie.getOverview());
-    }
-
-    private void showDetailUI() {
-        layoutDetail.setVisibility(VISIBLE);
-        scrollView.setVisibility(GONE);
-        appBarLayout.setVisibility(GONE);
-    }
-
-    private void closeDetailUI() {
-        layoutDetail.setVisibility(GONE);
-        scrollView.setVisibility(VISIBLE);
-        appBarLayout.setVisibility(VISIBLE);
     }
 }
