@@ -13,24 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/appBarLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar_main"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:contentInsetStartWithNavigation="0dp"
-                app:subtitleTextColor="@color/white"
-                app:titleTextColor="@android:color/white" />
-        </android.support.design.widget.AppBarLayout>
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar_main"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:contentInsetStartWithNavigation="0dp"
+                    app:subtitleTextColor="@color/white"
+                    app:titleTextColor="@android:color/white" />
+            </android.support.design.widget.AppBarLayout>
 
             <ScrollView
                 android:id="@+id/scrollView"
@@ -129,6 +129,7 @@
                 android:id="@+id/draggable_panel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="?attr/actionBarSize"
                 app:enable_horizontal_alpha_effect="false"
                 app:top_fragment_height="@dimen/top_fragment_height"
                 app:top_fragment_margin_bottom="@dimen/top_fragment_margin"

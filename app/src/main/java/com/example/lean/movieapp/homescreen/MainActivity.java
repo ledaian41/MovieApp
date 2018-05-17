@@ -138,15 +138,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void initializeYoutubeFragment(String videoKey) {
+        isWatchingVideo = true;
         youtubeFragment.initialize("AIzaSyAbAk5uEFOoWnq7pQ_lqBgVj0l1NT_0aWs", new YouTubePlayer.OnInitializedListener() {
 
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                                 YouTubePlayer player, boolean wasRestored) {
                 if (!wasRestored) {
-                    youtubePlayer = player;
-                    youtubePlayer.cueVideo(videoKey);
-                    youtubePlayer.setShowFullscreenButton(true);
+                    player.cueVideo(videoKey);
+                    player.setShowFullscreenButton(true);
                 }
 
             }
@@ -272,6 +272,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isWatchingVideo) {
+            if (draggablePanel != null) {
+                draggablePanel.minimize();
+            }
+            isWatchingVideo = false;
+        } else {
+            super.onBackPressed();
+        }
+
     }
 
     private void performSearchUI() {
