@@ -5,11 +5,14 @@ import android.content.res.TypedArray;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.example.lean.movieapp.R;
 
-public class DraggablePanel extends FrameLayout{
+import butterknife.OnClick;
+
+public class DraggablePanel extends FrameLayout {
     private static final int DEFAULT_TOP_FRAGMENT_HEIGHT = 200;
     private static final int DEFAULT_TOP_FRAGMENT_MARGIN = 0;
     private static final float DEFAULT_SCALE_FACTOR = 2;
@@ -34,6 +37,7 @@ public class DraggablePanel extends FrameLayout{
     private boolean enableClickToMaximize;
     private boolean enableClickToMinimize;
     private boolean enableTouchListener;
+    private OnClickDraggableView onClickDraggableView;
 
     public DraggablePanel(Context context) {
         super(context);
@@ -122,16 +126,15 @@ public class DraggablePanel extends FrameLayout{
     }
 
     /**
-     *
      * Slide the view based on scroll of the nav drawer.
      * "setEnableTouch" user prevents click to expand while the drawer is moving.
      * It's only possible to maximize the view when @slideOffset is equals to 0.0,
      * in other words, closed.
      *
-     * @param slideOffset Value between 0 and 1, represent the value of slide:
-     * 0.0 is equal to close drawer and 1.0 equals open drawer.
+     * @param slideOffset    Value between 0 and 1, represent the value of slide:
+     *                       0.0 is equal to close drawer and 1.0 equals open drawer.
      * @param drawerPosition Represent the position of nav drawer on X axis.
-     * @param width Width of nav drawer
+     * @param width          Width of nav drawer
      */
     public void slideHorizontally(float slideOffset, float drawerPosition, int width) {
         draggableView.slideHorizontally(slideOffset, drawerPosition, width);
@@ -344,5 +347,19 @@ public class DraggablePanel extends FrameLayout{
             throw new IllegalStateException(
                     "You have to set top and bottom fragment before initialize DraggablePanel");
         }
+    }
+
+    public void onClickDraggableView(View v){
+        if(onClickDraggableView!=null){
+            onClickDraggableView.onClickDraggableView();
+        }
+    }
+
+    public void setOnClickDraggableView(OnClickDraggableView onClickDraggableView) {
+        this.onClickDraggableView = onClickDraggableView;
+    }
+
+    public interface OnClickDraggableView {
+        void onClickDraggableView();
     }
 }

@@ -40,23 +40,11 @@ import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.DataResponse;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 import com.example.lean.movieapp.model_server.response.Trailers;
+import com.example.lean.movieapp.ui.DraggableListener;
 import com.example.lean.movieapp.ui.DraggablePanel;
 import com.example.lean.movieapp.ui.MyViewPager;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -97,8 +85,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     RelativeLayout layoutBody;
     @BindView(R.id.rvSearch)
     RecyclerView rvSearch;
-    @BindView(R.id.appBarLayout)
-    AppBarLayout appBarLayout;
     @BindView(R.id.draggable_panel)
     DraggablePanel draggablePanel;
 
@@ -127,6 +113,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void initializeDraggablePanel(MovieResponse movie) {
+        if (youtubeFragment != null) {
+            return;
+        }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         youtubeFragment = new YouTubePlayerSupportFragment();
         fragmentTransaction.replace(R.id.drag_view, new YouTubePlayerSupportFragment());
@@ -135,7 +124,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         draggablePanel.setTopFragment(youtubeFragment);
         draggablePanel.setBottomFragment(DetailFragment.newInstance(movie));
         draggablePanel.initializeView();
-//        mToolbar.setVisibility(GONE);
+        draggablePanel.maximize();
+        draggablePanel.setOnClickDraggableView(() -> Toast.makeText(this, "DraggableView Clicked", Toast.LENGTH_SHORT).show());
     }
 
     private void initializeYoutubeFragment(String videoKey) {
@@ -146,8 +136,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                                 YouTubePlayer player, boolean wasRestored) {
                 if (!wasRestored) {
-                    player.cueVideo(videoKey);
-                    player.setShowFullscreenButton(true);
+                    youtubePlayer = player;
+                    youtubePlayer.cueVideo(videoKey);
+                    youtubePlayer.setShowFullscreenButton(true);
                 }
 
             }
@@ -159,51 +150,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         });
     }
 
-//    private MediaSource buildMediaSource(Uri uri) {
-//        DataSource.Factory dataSourceFactory =
-//                new DefaultHttpDataSourceFactory("ua", BANDWIDTH_METER);
-//        return new ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri);
-//    }
-
-//    private void initializePlayer(String video) {
-//        if (player == null) {
-//            TrackSelection.Factory adaptiveTrackSelectionFactory =
-//                    new AdaptiveTrackSelection.Factory(BANDWIDTH_METER);
-//            player = ExoPlayerFactory.newSimpleInstance(this,
-//                    new DefaultTrackSelector(adaptiveTrackSelectionFactory)
-//            );
-//            playerView.setPlayer(player);
-//        }
-//
-//        player.setPlayWhenReady(playWhenReady);
-//        player.seekTo(currentWindow, playbackPosition);
-//        //TODO pass URL from Internet
-//        Uri uri = Uri.parse(video);
-//
-//        MediaSource mediaSource = buildMediaSource(uri);
-//        player.prepare(mediaSource, true, false);
-//
-//        showDetailUI();
-//    }
-
-//    private void releasePlayer() {
-//        if (player != null) {
-//            playbackPosition = player.getCurrentPosition();
-//            currentWindow = player.getCurrentWindowIndex();
-//            playWhenReady = player.getPlayWhenReady();
-//            player.release();
-//            player = null;
-//        }
-//    }
-
-//    private void hideSystemUi() {
-//        playerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-//                | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-//    }
 
     private void callApi() {
         mPresenter.getPopular(1);
@@ -243,6 +189,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mPopularAdapter = new PopularAdapter();
         mRvPopular.setLayoutManager(new GridLayoutManager(this, 2));
         mRvPopular.setAdapter(mPopularAdapter);
+        mRvPopular.setNestedScrollingEnabled(false);
 
         mSearchAdapter = new SearchAdapter();
         rvSearch.setLayoutManager(new LinearLayoutManager(this));
@@ -383,7 +330,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-//                clearFocusView();
                 closeSearchUI();
                 return true;
             }
@@ -462,5 +408,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         MovieResponse popularMovie = mPopularMovieList.get(popularEvent.getPosition());
         initializeDraggablePanel(popularMovie);
         mPresenter.getTrailerMovie(String.valueOf(popularMovie.getId()));
+        Toast.makeText(this, popularMovie.getTitle(), Toast.LENGTH_SHORT).show();
     }
+
 }
