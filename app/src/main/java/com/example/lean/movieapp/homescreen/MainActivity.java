@@ -134,7 +134,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         draggablePanel.setTopFragment(youtubeFragment);
         draggablePanel.setBottomFragment(DetailFragment.newInstance(movie));
         draggablePanel.initializeView();
-
+//        mToolbar.setVisibility(GONE);
     }
 
     private void initializeYoutubeFragment(String videoKey) {
