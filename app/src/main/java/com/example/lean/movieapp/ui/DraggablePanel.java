@@ -37,7 +37,6 @@ public class DraggablePanel extends FrameLayout {
     private boolean enableClickToMaximize;
     private boolean enableClickToMinimize;
     private boolean enableTouchListener;
-    private OnClickDraggableView onClickDraggableView;
 
     public DraggablePanel(Context context) {
         super(context);
@@ -46,6 +45,7 @@ public class DraggablePanel extends FrameLayout {
     public DraggablePanel(Context context, AttributeSet attrs) {
         super(context, attrs);
         initializeAttrs(attrs);
+
     }
 
     public DraggablePanel(Context context, AttributeSet attrs, int defStyle) {
@@ -178,7 +178,7 @@ public class DraggablePanel extends FrameLayout {
      * Configure the DraggableListener that is going to be invoked when the view be minimized,
      * maximized, closed to the left or right.
      */
-    public void setDraggableListener(DraggableListener draggableListener) {
+    public void setDraggablePanelListener(DraggableListener draggableListener) {
         this.draggableListener = draggableListener;
     }
 
@@ -240,7 +240,7 @@ public class DraggablePanel extends FrameLayout {
         checkSupportFragmentManagerConsistency();
 
         inflate(getContext(), R.layout.draggable_panel, this);
-        draggableView = (DraggableView) findViewById(R.id.draggable_view);
+        draggableView = findViewById(R.id.draggable_view);
         draggableView.setTopViewHeight(topFragmentHeight);
         draggableView.setFragmentManager(fragmentManager);
         draggableView.attachTopFragment(topFragment);
@@ -249,11 +249,11 @@ public class DraggablePanel extends FrameLayout {
         draggableView.setTopViewMarginRight(topFragmentMarginRight);
         draggableView.setTopViewMarginBottom(topFragmentMarginBottom);
         draggableView.attachBottomFragment(bottomFragment);
-        draggableView.setDraggableListener(draggableListener);
         draggableView.setHorizontalAlphaEffectEnabled(enableHorizontalAlphaEffect);
         draggableView.setClickToMaximizeEnabled(enableClickToMaximize);
         draggableView.setClickToMinimizeEnabled(enableClickToMinimize);
         draggableView.setTouchEnabled(enableTouchListener);
+        draggableView.setDraggableListener(draggableListener);
     }
 
     /**
@@ -349,17 +349,4 @@ public class DraggablePanel extends FrameLayout {
         }
     }
 
-    public void onClickDraggableView(View v){
-        if(onClickDraggableView!=null){
-            onClickDraggableView.onClickDraggableView();
-        }
-    }
-
-    public void setOnClickDraggableView(OnClickDraggableView onClickDraggableView) {
-        this.onClickDraggableView = onClickDraggableView;
-    }
-
-    public interface OnClickDraggableView {
-        void onClickDraggableView();
-    }
 }

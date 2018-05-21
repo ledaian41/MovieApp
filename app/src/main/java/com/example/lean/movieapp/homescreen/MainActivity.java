@@ -5,11 +5,8 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Movie;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -27,7 +24,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +36,7 @@ import com.example.lean.movieapp.model_server.request.SearchRequest;
 import com.example.lean.movieapp.model_server.response.DataResponse;
 import com.example.lean.movieapp.model_server.response.MovieResponse;
 import com.example.lean.movieapp.model_server.response.Trailers;
-import com.example.lean.movieapp.ui.DraggableListener;
+import com.example.lean.movieapp.ui.DraggableAdapter;
 import com.example.lean.movieapp.ui.DraggablePanel;
 import com.example.lean.movieapp.ui.MyViewPager;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -123,9 +119,29 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         draggablePanel.setFragmentManager(getSupportFragmentManager());
         draggablePanel.setTopFragment(youtubeFragment);
         draggablePanel.setBottomFragment(DetailFragment.newInstance(movie));
+        draggablePanel.setDraggablePanelListener(new DraggableAdapter(){
+            @Override
+            public void onMinimized() {
+                super.onMinimized();
+            }
+
+            @Override
+            public void onClosedToLeft() {
+                super.onClosedToLeft();
+            }
+
+            @Override
+            public void onClosedToRight() {
+                super.onClosedToRight();
+            }
+
+            @Override
+            public void onMaximized() {
+                super.onMaximized();
+            }
+        });
         draggablePanel.initializeView();
-        draggablePanel.maximize();
-        draggablePanel.setOnClickDraggableView(() -> Toast.makeText(this, "DraggableView Clicked", Toast.LENGTH_SHORT).show());
+
     }
 
     private void initializeYoutubeFragment(String videoKey) {
