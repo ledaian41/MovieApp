@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.lean.movieapp.BuildConfig;
 import com.example.lean.movieapp.R;
 import com.example.lean.movieapp.api.APIManager;
 import com.example.lean.movieapp.common.BaseActivity;
@@ -42,6 +43,7 @@ import com.example.lean.movieapp.ui.MyViewPager;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -53,6 +55,7 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import me.relex.circleindicator.CircleIndicator;
@@ -83,6 +86,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     RecyclerView rvSearch;
     @BindView(R.id.draggable_panel)
     DraggablePanel draggablePanel;
+//    @BindView(R.id.imgUser)
+//    CircleImageView imgUser;
+    @BindView(R.id.tvEmail)
+    TextView tvEmail;
 
     private ViewPagerAdapter mViewPagerAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -92,7 +99,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private SearchAdapter mSearchAdapter;
     private List<MovieResponse> mTopMovieList = new ArrayList<>();
     private List<MovieResponse> mPopularMovieList = new ArrayList<>();
-    private List<MovieResponse> mSearchResultList = new ArrayList<>();
     private SearchRequest mSearchRequest = new SearchRequest();
     private boolean isWatchingVideo = false;
     private YouTubePlayer youtubePlayer;
@@ -119,34 +125,47 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         draggablePanel.setFragmentManager(getSupportFragmentManager());
         draggablePanel.setTopFragment(youtubeFragment);
         draggablePanel.setBottomFragment(DetailFragment.newInstance(movie));
-        draggablePanel.setDraggablePanelListener(new DraggableAdapter(){
-            @Override
-            public void onMinimized() {
-                super.onMinimized();
-            }
+        draggablePanel.setClickToMaximizeEnabled(true);
+        hookDraggablePanelListener();
+        draggablePanel.initializeView();
+        draggablePanel.maximize();
+    }
 
+    private void hookDraggablePanelListener() {
+        draggablePanel.setDraggablePanelListener(new DraggableAdapter() {
             @Override
             public void onClosedToLeft() {
-                super.onClosedToLeft();
+                if (youtubePlayer != null) {
+                    youtubePlayer.release();
+                    youtubePlayer = null;
+                    youtubeFragment.onDestroy();
+                    draggablePanel.setTopFragment(null);
+                    draggablePanel.setBottomFragment(null);
+                    draggablePanel.setFragmentManager(null);
+                    draggablePanel.setDraggableView(null);
+                    draggablePanel.setDraggablePanelListener(null);
+                }
             }
 
             @Override
             public void onClosedToRight() {
-                super.onClosedToRight();
-            }
-
-            @Override
-            public void onMaximized() {
-                super.onMaximized();
+                if (youtubePlayer != null) {
+                    youtubePlayer.release();
+                    youtubePlayer = null;
+                    youtubeFragment.onDestroy();
+                    draggablePanel.setTopFragment(null);
+                    draggablePanel.setBottomFragment(null);
+                    draggablePanel.setFragmentManager(null);
+                    draggablePanel.setDraggableView(null);
+                    draggablePanel.setDraggablePanelListener(null);
+                }
             }
         });
-        draggablePanel.initializeView();
-
     }
 
     private void initializeYoutubeFragment(String videoKey) {
         isWatchingVideo = true;
-        youtubeFragment.initialize("AIzaSyAbAk5uEFOoWnq7pQ_lqBgVj0l1NT_0aWs", new YouTubePlayer.OnInitializedListener() {
+        youtubeFragment.initialize(BuildConfig.YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
 
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider,
@@ -189,6 +208,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         });
 
         mSearchRequest.setPage(1);
+        tvEmail.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
     }
 
     private void setupView() {
@@ -210,6 +230,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mSearchAdapter = new SearchAdapter();
         rvSearch.setLayoutManager(new LinearLayoutManager(this));
         rvSearch.setAdapter(mSearchAdapter);
+        rvSearch.setNestedScrollingEnabled(false);
 
     }
 

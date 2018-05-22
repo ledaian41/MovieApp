@@ -96,6 +96,10 @@ public class DraggablePanel extends FrameLayout {
         return enableClickToMaximize;
     }
 
+    public void setDraggableView(DraggableView draggableView) {
+        this.draggableView = draggableView;
+    }
+
     /**
      * Enable or disable click to maximize view when dragged view is minimized
      * If your content have a touch/click listener (like YoutubePlayer), you

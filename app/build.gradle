@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         buildConfigField "String", "API_KEY", '"73b7aa70ab52ac1b3f5af1ac0e4ad9a3"'
+        buildConfigField "String","YOUTUBE_API_KEY",'"AIzaSyAbAk5uEFOoWnq7pQ_lqBgVj0l1NT_0aWs"'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -64,6 +65,7 @@ dependencies {
     implementation 'com.ms-square:expandableTextView:0.1.4'
     implementation 'com.google.dagger:dagger:2.16'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.16'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

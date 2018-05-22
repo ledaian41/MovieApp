@@ -148,6 +148,34 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_alignParentTop="true"
+                android:background="@color/colorPrimary">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgUser"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_above="@+id/tvEmail"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/placeholder" />
+
+                <TextView
+                    android:id="@+id/tvEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:padding="8dp"
+                    android:singleLine="true"
+                    android:text="phan.thanhloc1705@gmail.com"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
             <Button
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
